@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>翻转棋 · 黑塔利亚角色扮演</title>
+    <title>翻转棋 · 丁诺の顶级智斗</title>
     <style>
         :root {
             --cell-size: clamp(38px, 10vw, 56px);
@@ -511,7 +511,7 @@
 
         <div class="controls-bar">
             <div class="mode-toggle-group" id="modeToggleGroup">
-                <button class="mode-btn active" data-mode="ai" id="btnModeAI">🤖 单人对战</button>
+                <button class="mode-btn active" data-mode="ai" id="btnModeAI">👤 单人对战</button>
                 <button class="mode-btn" data-mode="manual" id="btnModeManual">👥 双人对战</button>
             </div>
             <div class="difficulty-group" id="difficultyGroup">
@@ -1228,7 +1228,7 @@
                     else if (gameMode === 'manual') setStatus(
                         `对方无法落子，轮到${currentPlayer === BLACK ? '黑棋' : '白棋'}`, 'warning');
                 } else {
-                    if (gameMode === 'ai' && currentPlayer === WHITE) { setStatus('思考中...');
+                    if (gameMode === 'ai' && currentPlayer === WHITE) { setStatus('对方思考中...');
                         scheduleAIMove(); } else if (gameMode === 'ai' && currentPlayer === BLACK) setStatus(
                         '轮到您落子');
                     else setStatus(`轮到${currentPlayer === BLACK ? '黑棋' : '白棋'}落子`);
@@ -1260,7 +1260,7 @@
                 aiThinking = true;
                 renderBoard();
                 showValidMoves();
-                setStatus('思考中...');
+                setStatus('对方思考中...');
                 setTimeout(() => { if (gameOver) { aiThinking = false; return; }
                     performAIMove(); }, 300 + Math.random() * 400);
             }
