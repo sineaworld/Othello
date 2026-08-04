@@ -59,7 +59,6 @@
             max-width: 750px;
         }
 
-        /* ========== 标题 ========== */
         .game-title {
             font-size: clamp(1.4rem, 3.5vw, 2rem);
             font-weight: 700;
@@ -70,7 +69,6 @@
             margin-bottom: 2px;
         }
 
-        /* ========== 模式选择 & 按钮区 ========== */
         .controls-bar {
             display: flex;
             flex-wrap: wrap;
@@ -81,7 +79,8 @@
             max-width: 500px;
         }
 
-        .mode-toggle-group {
+        .mode-toggle-group,
+        .difficulty-group {
             display: flex;
             background: var(--panel-bg);
             border-radius: 30px;
@@ -90,7 +89,8 @@
             box-shadow: var(--shadow);
         }
 
-        .mode-btn {
+        .mode-btn,
+        .difficulty-btn {
             padding: 10px 20px;
             cursor: pointer;
             border: none;
@@ -104,12 +104,14 @@
             font-family: inherit;
         }
 
-        .mode-btn.active {
+        .mode-btn.active,
+        .difficulty-btn.active {
             background: var(--accent);
             color: #1a1a2e;
             box-shadow: 0 2px 10px rgba(244, 162, 97, 0.4);
         }
-        .mode-btn:hover:not(.active) {
+        .mode-btn:hover:not(.active),
+        .difficulty-btn:hover:not(.active) {
             color: #ddd;
             background: rgba(255, 255, 255, 0.05);
         }
@@ -134,7 +136,6 @@
             box-shadow: 0 2px 14px rgba(244, 162, 97, 0.5);
         }
 
-        /* ========== 主游戏区域（桌面端横向布局） ========== */
         .main-game-area {
             display: flex;
             align-items: center;
@@ -143,7 +144,6 @@
             width: 100%;
         }
 
-        /* ========== 玩家面板 ========== */
         .player-panel {
             display: flex;
             flex-direction: column;
@@ -173,7 +173,6 @@
             }
         }
 
-        /* ========== 头像容器 ========== */
         .avatar-container {
             width: var(--avatar-size-desktop);
             height: var(--avatar-size-desktop);
@@ -194,11 +193,9 @@
             object-fit: cover;
             display: block;
         }
-        /* 头像加载失败时隐藏整个容器 */
         .avatar-container.hidden-avatar {
             display: none;
         }
-        /* 头像占位图标（无头像时显示） */
         .avatar-placeholder {
             width: 100%;
             height: 100%;
@@ -215,7 +212,6 @@
         .avatar-container.hidden-avatar .avatar-placeholder {
             display: flex;
         }
-        /* 当有img且加载成功时，占位符隐藏 */
         .avatar-container.has-image .avatar-placeholder {
             display: none !important;
         }
@@ -259,7 +255,6 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        /* ========== 棋盘容器 ========== */
         .board-outer {
             background: var(--board-border);
             border-radius: 12px;
@@ -370,7 +365,6 @@
             }
         }
 
-        /* ========== 状态消息 ========== */
         .status-message {
             font-size: 0.9rem;
             font-weight: 500;
@@ -389,7 +383,11 @@
             font-size: 1rem;
         }
 
-        /* ========== 响应式：移动端 ========== */
+        /* 难度组默认可见（仅AI模式时） */
+        .difficulty-group.hidden {
+            display: none;
+        }
+
         @media (max-width: 768px) {
             :root {
                 --cell-size: clamp(36px, 10.5vw, 50px);
@@ -401,7 +399,6 @@
                 gap: 12px;
             }
 
-            /* 移动端：两个玩家面板并排显示在棋盘上方 */
             .players-row {
                 display: flex;
                 gap: 12px;
@@ -453,7 +450,8 @@
             .controls-bar {
                 gap: 8px;
             }
-            .mode-btn {
+            .mode-btn,
+            .difficulty-btn {
                 padding: 8px 14px;
                 font-size: 0.8rem;
             }
@@ -462,14 +460,12 @@
                 font-size: 0.8rem;
             }
 
-            /* 桌面端的独立面板在移动端隐藏，改用players-row */
             .player-panel-desktop {
                 display: none;
             }
         }
 
         @media (min-width: 769px) {
-            /* 桌面端：面板在棋盘两侧 */
             .players-row {
                 display: none;
             }
@@ -478,7 +474,6 @@
             }
         }
 
-        /* 超小屏幕优化 */
         @media (max-width: 380px) {
             :root {
                 --cell-size: clamp(30px, 11vw, 38px);
@@ -504,36 +499,28 @@
 <body>
 
     <div class="game-wrapper">
-        <!-- 标题 -->
         <h1 class="game-title">🔄 翻转棋 Othello</h1>
 
-        <!-- 模式选择 & 按钮 -->
         <div class="controls-bar">
             <div class="mode-toggle-group" id="modeToggleGroup">
                 <button class="mode-btn active" data-mode="ai" id="btnModeAI">🤖 人机对战</button>
                 <button class="mode-btn" data-mode="manual" id="btnModeManual">👥 双人对战</button>
             </div>
+            <!-- 难度选择（仅人机模式显示） -->
+            <div class="difficulty-group" id="difficultyGroup">
+                <button class="difficulty-btn" data-difficulty="1" id="btnDiff1">难度1</button>
+                <button class="difficulty-btn active" data-difficulty="2" id="btnDiff2">难度2</button>
+            </div>
             <button class="btn-new-game" id="btnNewGame">🔄 新游戏</button>
         </div>
 
-        <!-- 状态消息 -->
         <div class="status-message" id="statusMessage">黑棋先行，请落子</div>
 
-        <!-- 主游戏区域 -->
         <div class="main-game-area">
             <!-- 桌面端：左侧玩家面板 -->
             <div class="player-panel player-panel-desktop active-player" id="panelPlayerDesktop">
-                <!--
-                ==============================================
-                ★ 玩家头像设置处 ★
-                请将下方 img 标签的 src 替换为您的头像图片链接
-                图片建议尺寸：800×800px（会自动缩放适应容器）
-                如果链接失效或留空，头像区域将不显示图片
-                ==============================================
-                -->
                 <div class="avatar-container hidden-avatar" id="avatarContainerPlayer">
                     <div class="avatar-placeholder">👤</div>
-                    <!-- 👇 在这里粘贴玩家头像的URL 👇 -->
                     <img
                     src=""
                     alt="玩家头像"
@@ -541,7 +528,6 @@
                     onload="handleAvatarLoad(this, 'avatarContainerPlayer')"
                     id="imgPlayerAvatar"
                     >
-                    <!-- 👆 将上面的 src="" 替换为您的图片链接 👆 -->
                 </div>
                 <div class="player-name">⚫ 玩家（黑棋）</div>
                 <div class="player-score" id="scorePlayerDesktop">2</div>
@@ -552,24 +538,13 @@
 
             <!-- 棋盘 -->
             <div class="board-outer">
-                <div class="board-grid" id="boardGrid">
-                    <!-- 8×8 格子由JS动态生成 -->
-                </div>
+                <div class="board-grid" id="boardGrid"></div>
             </div>
 
             <!-- 桌面端：右侧对手面板 -->
             <div class="player-panel player-panel-desktop" id="panelOpponentDesktop">
-                <!--
-                ==============================================
-                ★ 对手头像设置处 ★
-                请将下方 img 标签的 src 替换为对手的头像图片链接
-                图片建议尺寸：800×800px（会自动缩放适应容器）
-                如果链接失效或留空，头像区域将不显示图片
-                ==============================================
-                -->
                 <div class="avatar-container hidden-avatar" id="avatarContainerOpponent">
                     <div class="avatar-placeholder">👤</div>
-                    <!-- 👇 在这里粘贴对手头像的URL 👇 -->
                     <img
                     src=""
                     alt="对手头像"
@@ -577,7 +552,6 @@
                     onload="handleAvatarLoad(this, 'avatarContainerOpponent')"
                     id="imgOpponentAvatar"
                     >
-                    <!-- 👆 将上面的 src="" 替换为您的图片链接 👆 -->
                 </div>
                 <div class="player-name" id="opponentNameDesktop">🤖 AI对手（白棋）</div>
                 <div class="player-score" id="scoreOpponentDesktop">2</div>
@@ -586,13 +560,11 @@
                 </div>
             </div>
 
-            <!-- 移动端：两个玩家面板并排（在棋盘上方显示） -->
+            <!-- 移动端：两个玩家面板并排 -->
             <div class="players-row" id="playersRowMobile">
-                <!-- 移动端玩家面板 -->
                 <div class="player-panel active-player" id="panelPlayerMobile">
                     <div class="avatar-container hidden-avatar" id="avatarContainerPlayerMobile">
                         <div class="avatar-placeholder">👤</div>
-                        <!-- 👇 移动端玩家头像（与桌面端共用同一个URL，无需重复设置） 👇 -->
                         <img
                         src=""
                         alt="玩家头像"
@@ -604,11 +576,9 @@
                     <div class="player-name">⚫ 玩家</div>
                     <div class="player-score" id="scorePlayerMobile">2</div>
                 </div>
-                <!-- 移动端对手面板 -->
                 <div class="player-panel" id="panelOpponentMobile">
                     <div class="avatar-container hidden-avatar" id="avatarContainerOpponentMobile">
                         <div class="avatar-placeholder">👤</div>
-                        <!-- 👇 移动端对手头像（与桌面端共用同一个URL，无需重复设置） 👇 -->
                         <img
                         src=""
                         alt="对手头像"
@@ -626,11 +596,9 @@
 
     <script>
         (function() {
-            // ============ 常量 ============
             const EMPTY = 0;
-            const BLACK = 1; // 玩家（先手）
-            const WHITE = 2; // 对手（后手）
-
+            const BLACK = 1;
+            const WHITE = 2;
             const DIRECTIONS = [
                 [-1, -1],
                 [-1, 0],
@@ -643,73 +611,54 @@
             ];
 
             // ============ 头像URL配置 ============
-            /*
-             * =======================================================
-             * ★★★ 头像URL统一配置处 ★★★
-             * 请将下面的两个变量替换为您自己的头像图片链接
-             * 图片建议尺寸：800×800px
-             * 留空或链接失效时，头像区域将自动隐藏
-             * 桌面端和移动端会自动同步使用这些URL
-             * =======================================================
-             */
-            const PLAYER_AVATAR_URL = 'https://bcn.135editor.com/files/images/editor_styles/313b3f11666b3a8f94068465bd212724.jpg'; // 👈 玩家头像URL（粘贴在引号之间）
-            const OPPONENT_AVATAR_URL = 'https://n.sinaimg.cn/sinacn21/200/w500h500/20180710/24f8-hfefkqp7840363.jpg'; // 👈 对手头像URL（粘贴在引号之间）
-            /*
-             * =======================================================
-             * 示例：
-             * const PLAYER_AVATAR_URL = 'https://example.com/my-avatar.jpg';
-             * const OPPONENT_AVATAR_URL = 'https://example.com/opponent-avatar.jpg';
-             * =======================================================
-             */
+            const PLAYER_AVATAR_URL = '';
+            const OPPONENT_AVATAR_URL = '';
 
-            // ============ 游戏状态 ============
-            let board = []; // 8×8, 0=空, 1=黑, 2=白
+            // 游戏状态
+            let board = [];
             let currentPlayer = BLACK;
             let gameOver = false;
             let lastMoveRow = -1;
             let lastMoveCol = -1;
-            let gameMode = 'ai'; // 'ai' | 'manual'
+            let gameMode = 'ai';          // 'ai' | 'manual'
+            let aiDifficulty = 2;         // 1：简单，2：困难（默认）
             let aiThinking = false;
             let moveHistory = [];
-            let skipCount = 0; // 连续跳过次数
+            let skipCount = 0;
 
-            // ============ DOM元素引用 ============
+            // DOM元素
             const boardGrid = document.getElementById('boardGrid');
             const statusMessage = document.getElementById('statusMessage');
             const btnNewGame = document.getElementById('btnNewGame');
             const btnModeAI = document.getElementById('btnModeAI');
             const btnModeManual = document.getElementById('btnModeManual');
+            const difficultyGroup = document.getElementById('difficultyGroup');
+            const btnDiff1 = document.getElementById('btnDiff1');
+            const btnDiff2 = document.getElementById('btnDiff2');
 
-            // 桌面端面板
             const panelPlayerDesktop = document.getElementById('panelPlayerDesktop');
             const panelOpponentDesktop = document.getElementById('panelOpponentDesktop');
             const scorePlayerDesktop = document.getElementById('scorePlayerDesktop');
             const scoreOpponentDesktop = document.getElementById('scoreOpponentDesktop');
             const opponentNameDesktop = document.getElementById('opponentNameDesktop');
 
-            // 移动端面板
             const panelPlayerMobile = document.getElementById('panelPlayerMobile');
             const panelOpponentMobile = document.getElementById('panelOpponentMobile');
             const scorePlayerMobile = document.getElementById('scorePlayerMobile');
             const scoreOpponentMobile = document.getElementById('scoreOpponentMobile');
             const opponentNameMobile = document.getElementById('opponentNameMobile');
 
-            // 头像容器和图片元素（桌面端）
             const avatarContainerPlayer = document.getElementById('avatarContainerPlayer');
             const avatarContainerOpponent = document.getElementById('avatarContainerOpponent');
             const imgPlayerAvatar = document.getElementById('imgPlayerAvatar');
             const imgOpponentAvatar = document.getElementById('imgOpponentAvatar');
-
-            // 头像容器和图片元素（移动端）
             const avatarContainerPlayerMobile = document.getElementById('avatarContainerPlayerMobile');
             const avatarContainerOpponentMobile = document.getElementById('avatarContainerOpponentMobile');
             const imgPlayerAvatarMobile = document.getElementById('imgPlayerAvatarMobile');
             const imgOpponentAvatarMobile = document.getElementById('imgOpponentAvatarMobile');
 
-            // 所有单元格引用
             let cellElements = [];
 
-            // ============ AI位置权重表 ============
             const POSITION_WEIGHTS = [
                 [100, -20, 10, 5, 5, 10, -20, 100],
                 [-20, -50, -2, -2, -2, -2, -50, -20],
@@ -721,20 +670,12 @@
                 [100, -20, 10, 5, 5, 10, -20, 100]
             ];
 
-            // ============ 初始化头像 ============
+            // 头像初始化
             function initAvatars() {
-                // 设置所有头像的src
                 const allPlayerImgs = [imgPlayerAvatar, imgPlayerAvatarMobile];
                 const allOpponentImgs = [imgOpponentAvatar, imgOpponentAvatarMobile];
-
-                allPlayerImgs.forEach(img => {
-                    if (img) img.src = PLAYER_AVATAR_URL;
-                });
-                allOpponentImgs.forEach(img => {
-                    if (img) img.src = OPPONENT_AVATAR_URL;
-                });
-
-                // 如果URL为空，保持隐藏状态
+                allPlayerImgs.forEach(img => { if (img) img.src = PLAYER_AVATAR_URL; });
+                allOpponentImgs.forEach(img => { if (img) img.src = OPPONENT_AVATAR_URL; });
                 if (!PLAYER_AVATAR_URL) {
                     avatarContainerPlayer.classList.add('hidden-avatar');
                     avatarContainerPlayerMobile.classList.add('hidden-avatar');
@@ -745,14 +686,12 @@
                 }
             }
 
-            // ============ 头像加载回调 ============
             window.handleAvatarError = function(imgElement, containerId) {
                 const container = document.getElementById(containerId);
                 if (container) {
                     container.classList.add('hidden-avatar');
                     container.classList.remove('has-image');
                 }
-                // 同步隐藏对应的移动端/桌面端容器
                 syncAvatarContainers(containerId);
             };
 
@@ -761,13 +700,11 @@
                 if (container && imgElement.src && imgElement.src.trim() !== '') {
                     container.classList.remove('hidden-avatar');
                     container.classList.add('has-image');
-                    // 同步显示对应的移动端/桌面端容器
                     syncAvatarContainers(containerId, true);
                 }
             };
 
             function syncAvatarContainers(containerId, show = false) {
-                // 桌面端和移动端头像容器同步
                 const mapping = {
                     'avatarContainerPlayer': 'avatarContainerPlayerMobile',
                     'avatarContainerPlayerMobile': 'avatarContainerPlayer',
@@ -787,7 +724,6 @@
                         }
                     }
                 }
-                // 同时同步img的src
                 syncImgSrc(containerId);
             }
 
@@ -796,12 +732,9 @@
                     { desktop: 'imgPlayerAvatar', mobile: 'imgPlayerAvatarMobile' },
                     { desktop: 'imgOpponentAvatar', mobile: 'imgOpponentAvatarMobile' },
                 ];
-                const isDesktop = containerId.includes('Desktop') || (!containerId.includes('Mobile') && containerId
-                    .startsWith('avatarContainer') && !containerId.endsWith('Mobile'));
                 const isPlayer = containerId.toLowerCase().includes('player');
-
                 pairs.forEach(pair => {
-                    if (isPlayer && (containerId.includes('Player'))) {
+                    if (isPlayer && containerId.includes('Player')) {
                         const desktopImg = document.getElementById(pair.desktop);
                         const mobileImg = document.getElementById(pair.mobile);
                         if (desktopImg && mobileImg && desktopImg.src !== mobileImg.src) {
@@ -812,7 +745,7 @@
                             }
                         }
                     }
-                    if (!isPlayer && (containerId.includes('Opponent'))) {
+                    if (!isPlayer && containerId.includes('Opponent')) {
                         const desktopImg = document.getElementById(pair.desktop.replace('Player', 'Opponent'));
                         const mobileImg = document.getElementById(pair.mobile.replace('Player', 'Opponent'));
                         if (desktopImg && mobileImg && desktopImg.src !== mobileImg.src) {
@@ -826,7 +759,7 @@
                 });
             }
 
-            // ============ 棋盘创建 ============
+            // 创建棋盘DOM
             function createBoardDOM() {
                 boardGrid.innerHTML = '';
                 cellElements = [];
@@ -838,7 +771,6 @@
                         cell.dataset.row = row;
                         cell.dataset.col = col;
                         cell.addEventListener('click', () => onCellClick(row, col));
-                        // 触摸事件防止双击缩放
                         cell.addEventListener('touchstart', (e) => {
                             e.preventDefault();
                             onCellClick(row, col);
@@ -849,13 +781,9 @@
                 }
             }
 
-            // ============ 游戏逻辑 ============
             function createBoard() {
                 const b = [];
-                for (let r = 0; r < 8; r++) {
-                    b[r] = new Array(8).fill(EMPTY);
-                }
-                // 标准奥赛罗初始布局
+                for (let r = 0; r < 8; r++) b[r] = new Array(8).fill(EMPTY);
                 b[3][3] = WHITE;
                 b[3][4] = BLACK;
                 b[4][3] = BLACK;
@@ -863,23 +791,16 @@
                 return b;
             }
 
-            function cloneBoard(b) {
-                return b.map(row => [...row]);
-            }
-
-            function isInBounds(r, c) {
-                return r >= 0 && r < 8 && c >= 0 && c < 8;
-            }
+            function cloneBoard(b) { return b.map(row => [...row]); }
+            function isInBounds(r, c) { return r >= 0 && r < 8 && c >= 0 && c < 8; }
 
             function getFlips(b, row, col, player) {
-                // 返回在(row,col)落子后会翻转的对方棋子坐标列表
                 if (!isInBounds(row, col) || b[row][col] !== EMPTY) return [];
                 const opponent = player === BLACK ? WHITE : BLACK;
                 const flips = [];
                 for (const [dr, dc] of DIRECTIONS) {
                     const tempFlips = [];
-                    let r = row + dr;
-                    let c = col + dc;
+                    let r = row + dr, c = col + dc;
                     while (isInBounds(r, c) && b[r][c] === opponent) {
                         tempFlips.push([r, c]);
                         r += dr;
@@ -900,9 +821,7 @@
                 const moves = [];
                 for (let r = 0; r < 8; r++) {
                     for (let c = 0; c < 8; c++) {
-                        if (isValidMove(b, r, c, player)) {
-                            moves.push([r, c]);
-                        }
+                        if (isValidMove(b, r, c, player)) moves.push([r, c]);
                     }
                 }
                 return moves;
@@ -912,15 +831,12 @@
                 const newBoard = cloneBoard(b);
                 const flips = getFlips(newBoard, row, col, player);
                 newBoard[row][col] = player;
-                for (const [fr, fc] of flips) {
-                    newBoard[fr][fc] = player;
-                }
+                for (const [fr, fc] of flips) newBoard[fr][fc] = player;
                 return { board: newBoard, flips };
             }
 
             function countPieces(b) {
-                let black = 0;
-                let white = 0;
+                let black = 0, white = 0;
                 for (let r = 0; r < 8; r++) {
                     for (let c = 0; c < 8; c++) {
                         if (b[r][c] === BLACK) black++;
@@ -930,17 +846,34 @@
                 return { black, white };
             }
 
-            // ============ 渲染 ============
+            function clearValidMoves() {
+                for (let r = 0; r < 8; r++) {
+                    for (let c = 0; c < 8; c++) {
+                        cellElements[r][c].classList.remove('valid-move');
+                    }
+                }
+            }
+
+            function showValidMoves() {
+                clearValidMoves();
+                if (gameOver || aiThinking) return;
+                const shouldShow = (gameMode === 'manual') || (gameMode === 'ai' && currentPlayer === BLACK);
+                if (shouldShow) {
+                    const moves = getValidMoves(board, currentPlayer);
+                    for (const [r, c] of moves) {
+                        cellElements[r][c].classList.add('valid-move');
+                    }
+                }
+            }
+
             function renderBoard(flippedCells = []) {
                 const flippedSet = new Set(flippedCells.map(([r, c]) => `${r},${c}`));
                 for (let r = 0; r < 8; r++) {
                     for (let c = 0; c < 8; c++) {
                         const cell = cellElements[r][c];
-                        // 清除之前的棋子
                         const existingStone = cell.querySelector('.stone');
                         if (existingStone) {
                             if (flippedSet.has(`${r},${c}`)) {
-                                // 翻转动画
                                 existingStone.classList.add('flipping');
                                 setTimeout(() => {
                                     updateStoneInCell(cell, board[r][c]);
@@ -948,7 +881,6 @@
                             } else if (board[r][c] === EMPTY) {
                                 existingStone.remove();
                             } else {
-                                // 更新棋子颜色（可能之前是对方棋子被翻转了）
                                 const stoneClass = board[r][c] === BLACK ? 'black' : 'white';
                                 if (!existingStone.classList.contains(stoneClass)) {
                                     existingStone.classList.remove('black', 'white');
@@ -956,33 +888,18 @@
                                 }
                             }
                         } else if (board[r][c] !== EMPTY) {
-                            // 创建新棋子
                             const stone = document.createElement('div');
                             stone.classList.add('stone');
                             stone.classList.add(board[r][c] === BLACK ? 'black' : 'white');
                             cell.appendChild(stone);
                         }
-                        // 清除高亮
-                        cell.classList.remove('valid-move', 'last-move');
+                        cell.classList.remove('last-move');
                     }
                 }
-                // 标记最后一步
                 if (lastMoveRow >= 0 && lastMoveCol >= 0 && board[lastMoveRow][lastMoveCol] !== EMPTY) {
                     cellElements[lastMoveRow][lastMoveCol].classList.add('last-move');
                 }
-                // 显示合法移动
-                if (!gameOver && !aiThinking) {
-                    const humanPlayer = (gameMode === 'ai') ? BLACK : currentPlayer;
-                    if (currentPlayer === humanPlayer || gameMode === 'manual') {
-                        const validMoves = getValidMoves(board, currentPlayer);
-                        for (const [vr, vc] of validMoves) {
-                            cellElements[vr][vc].classList.add('valid-move');
-                        }
-                    }
-                }
-                // 更新分数
                 updateScores();
-                // 更新面板高亮
                 updatePanelHighlight();
             }
 
@@ -1006,7 +923,6 @@
             }
 
             function updatePanelHighlight() {
-                // 移除所有高亮
                 [panelPlayerDesktop, panelOpponentDesktop, panelPlayerMobile, panelOpponentMobile].forEach(p => {
                     if (p) p.classList.remove('active-player');
                 });
@@ -1032,7 +948,6 @@
                 if (type) statusMessage.classList.add(type);
             }
 
-            // ============ 游戏流程 ============
             function startNewGame() {
                 board = createBoard();
                 currentPlayer = BLACK;
@@ -1044,9 +959,9 @@
                 skipCount = 0;
                 updateOpponentName();
                 renderBoard();
+                showValidMoves();
                 setStatus('黑棋先行，请落子');
                 updatePanelHighlight();
-                // 检查当前玩家是否有合法移动
                 checkCurrentPlayerCanMove();
             }
 
@@ -1054,22 +969,20 @@
                 if (gameOver) return;
                 const validMoves = getValidMoves(board, currentPlayer);
                 if (validMoves.length === 0) {
-                    // 当前玩家无法移动
                     skipCount++;
                     const skippedPlayer = currentPlayer;
                     currentPlayer = currentPlayer === BLACK ? WHITE : BLACK;
                     renderBoard();
+                    showValidMoves();
                     const skippedName = skippedPlayer === BLACK ? '黑棋' : '白棋';
                     setStatus(`${skippedName}无法落子，回合跳过`, 'warning');
 
-                    // 检查另一方是否能移动
                     const nextValidMoves = getValidMoves(board, currentPlayer);
                     if (nextValidMoves.length === 0) {
                         endGame();
                         return;
                     }
                     skipCount = 0;
-                    // 如果对手是AI且当前轮到AI
                     if (gameMode === 'ai' && currentPlayer === WHITE && !gameOver) {
                         scheduleAIMove();
                     }
@@ -1084,30 +997,17 @@
             function onCellClick(row, col) {
                 if (gameOver) return;
                 if (aiThinking) return;
-
-                // 确定人类玩家
-                if (gameMode === 'ai' && currentPlayer === WHITE) {
-                    // AI回合，忽略点击
-                    return;
-                }
-                // 在手动模式下，两个玩家都是人类
-                // 当前轮到谁就由谁点击
+                if (gameMode === 'ai' && currentPlayer === WHITE) return;
 
                 const validMoves = getValidMoves(board, currentPlayer);
                 const isValid = validMoves.some(([vr, vc]) => vr === row && vc === col);
                 if (!isValid) {
-                    // 点击了无效位置，给出提示
                     setStatus('该位置无法落子，请选择标记了圆点的位置', 'warning');
-                    // 短暂闪烁提示
                     const cell = cellElements[row][col];
                     cell.style.background = 'rgba(255,100,100,0.5)';
-                    setTimeout(() => {
-                        cell.style.background = '';
-                    }, 300);
+                    setTimeout(() => { cell.style.background = ''; }, 300);
                     return;
                 }
-
-                // 执行移动
                 executeMove(row, col, currentPlayer);
             }
 
@@ -1118,42 +1018,31 @@
                 lastMoveCol = col;
                 moveHistory.push({ row, col, player, flips: result.flips });
 
-                // 渲染棋盘（带动画）
                 renderBoard(result.flips);
 
-                // 检查游戏是否结束（棋盘满）
                 const { black, white } = countPieces(board);
-                const totalPieces = black + white;
-                if (totalPieces >= 64) {
-                    endGame();
-                    return;
-                }
-                if (black === 0 || white === 0) {
+                if (black + white >= 64 || black === 0 || white === 0) {
                     endGame();
                     return;
                 }
 
-                // 切换玩家
                 currentPlayer = player === BLACK ? WHITE : BLACK;
                 skipCount = 0;
 
-                // 检查新当前玩家是否能移动
                 const validMoves = getValidMoves(board, currentPlayer);
                 if (validMoves.length === 0) {
-                    // 新当前玩家无法移动，跳过
                     const skippedPlayer = currentPlayer;
                     currentPlayer = currentPlayer === BLACK ? WHITE : BLACK;
                     renderBoard();
+                    showValidMoves();
                     const skippedName = skippedPlayer === BLACK ? '黑棋' : '白棋';
                     setStatus(`${skippedName}无法落子，回合跳过`, 'warning');
 
-                    // 再检查另一方
                     const nextValidMoves = getValidMoves(board, currentPlayer);
                     if (nextValidMoves.length === 0) {
                         endGame();
                         return;
                     }
-                    // 如果又轮到AI
                     if (gameMode === 'ai' && currentPlayer === WHITE && !gameOver) {
                         scheduleAIMove();
                     } else if (gameMode === 'ai' && currentPlayer === BLACK && !gameOver) {
@@ -1163,7 +1052,6 @@
                         setStatus(`对方无法落子，轮到${name}继续`, 'warning');
                     }
                 } else {
-                    // 正常轮到下一位
                     if (gameMode === 'ai' && currentPlayer === WHITE && !gameOver) {
                         setStatus('AI思考中...');
                         scheduleAIMove();
@@ -1174,6 +1062,8 @@
                         setStatus(`轮到${name}落子`);
                     }
                 }
+
+                showValidMoves();
                 updatePanelHighlight();
             }
 
@@ -1183,94 +1073,88 @@
                 const { black, white } = countPieces(board);
                 let resultMsg = '';
                 let type = 'victory';
-                if (black > white) {
-                    resultMsg = `🎉 游戏结束！黑棋获胜！ (${black}:${white})`;
-                } else if (white > black) {
-                    resultMsg = `🎉 游戏结束！白棋获胜！ (${black}:${white})`;
-                } else {
-                    resultMsg = `🤝 游戏结束！平局！ (${black}:${white})`;
-                    type = '';
-                }
+                if (black > white) resultMsg = `🎉 游戏结束！黑棋获胜！ (${black}:${white})`;
+                else if (white > black) resultMsg = `🎉 游戏结束！白棋获胜！ (${black}:${white})`;
+                else { resultMsg = `🤝 游戏结束！平局！ (${black}:${white})`; type = ''; }
                 setStatus(resultMsg, type);
                 renderBoard();
+                clearValidMoves();
                 updatePanelHighlight();
             }
 
-            // ============ AI ============
             function scheduleAIMove() {
-                if (gameOver) return;
-                if (currentPlayer !== WHITE) return;
-                if (gameMode !== 'ai') return;
+                if (gameOver || currentPlayer !== WHITE || gameMode !== 'ai') return;
                 aiThinking = true;
                 renderBoard();
+                showValidMoves();
                 setStatus('AI思考中...');
-                // 模拟思考延迟
                 const delay = 300 + Math.random() * 400;
                 setTimeout(() => {
-                    if (gameOver) {
-                        aiThinking = false;
-                        return;
-                    }
+                    if (gameOver) { aiThinking = false; return; }
                     performAIMove();
                 }, delay);
             }
 
             function performAIMove() {
-                if (gameOver) {
-                    aiThinking = false;
-                    return;
-                }
+                if (gameOver) { aiThinking = false; return; }
                 const validMoves = getValidMoves(board, WHITE);
                 if (validMoves.length === 0) {
                     aiThinking = false;
-                    // AI无法移动，跳过
                     currentPlayer = BLACK;
                     renderBoard();
+                    showValidMoves();
                     setStatus('AI无法落子，轮到您（黑棋）', 'warning');
                     const playerMoves = getValidMoves(board, BLACK);
-                    if (playerMoves.length === 0) {
-                        endGame();
-                    }
+                    if (playerMoves.length === 0) endGame();
                     updatePanelHighlight();
                     return;
                 }
 
-                // 使用位置权重+翻转数评估每个移动
                 let bestMove = validMoves[0];
                 let bestScore = -Infinity;
+
                 for (const [r, c] of validMoves) {
                     const flips = getFlips(board, r, c, WHITE);
                     const flipCount = flips.length;
                     const posWeight = POSITION_WEIGHTS[r][c];
-                    // 综合评分：位置权重 + 翻转数*3
-                    const score = posWeight + flipCount * 3;
-                    if (score > bestScore) {
-                        bestScore = score;
-                        bestMove = [r, c];
+
+                    // 根据难度选择评分策略
+                    if (aiDifficulty === 1) {
+                        // 简单：只看翻转数
+                        if (flipCount > bestScore) {
+                            bestScore = flipCount;
+                            bestMove = [r, c];
+                        }
+                    } else {
+                        // 困难：位置权重 + 翻转数
+                        const score = posWeight + flipCount * 3;
+                        if (score > bestScore) {
+                            bestScore = score;
+                            bestMove = [r, c];
+                        }
                     }
                 }
 
-                const [aiRow, aiCol] = bestMove;
                 aiThinking = false;
-                executeMove(aiRow, aiCol, WHITE);
+                executeMove(bestMove[0], bestMove[1], WHITE);
                 if (!gameOver && currentPlayer === BLACK) {
                     setStatus('轮到您（黑棋）落子');
                 }
             }
 
-            // ============ 模式切换 ============
             function setGameMode(mode) {
                 if (gameMode === mode && moveHistory.length > 0) {
-                    // 相同模式且游戏已开始，询问是否重新开始
                     if (confirm('确定要重新开始游戏吗？')) {
                         gameMode = mode;
                         updateModeButtons();
+                        updateDifficultyVisibility();
                         startNewGame();
                     }
                     return;
                 }
                 gameMode = mode;
                 updateModeButtons();
+                updateDifficultyVisibility();
                 updateOpponentName();
                 startNewGame();
             }
@@ -1280,7 +1164,30 @@
                 btnModeManual.classList.toggle('active', gameMode === 'manual');
             }
 
-            // ============ 事件绑定 ============
+            function updateDifficultyButtons() {
+                btnDiff1.classList.toggle('active', aiDifficulty === 1);
+                btnDiff2.classList.toggle('active', aiDifficulty === 2);
+            }
+
+            function updateDifficultyVisibility() {
+                if (gameMode === 'ai') {
+                    difficultyGroup.classList.remove('hidden');
+                } else {
+                    difficultyGroup.classList.add('hidden');
+                }
+            }
+
+            // 难度切换事件
+            btnDiff1.addEventListener('click', () => {
+                aiDifficulty = 1;
+                updateDifficultyButtons();
+                // 如果AI正在思考，不重置；下回合自动应用新难度
+            });
+            btnDiff2.addEventListener('click', () => {
+                aiDifficulty = 2;
+                updateDifficultyButtons();
+            });
+
             btnModeAI.addEventListener('click', () => setGameMode('ai'));
             btnModeManual.addEventListener('click', () => setGameMode('manual'));
             btnNewGame.addEventListener('click', () => {
@@ -1290,43 +1197,33 @@
                 startNewGame();
             });
 
-            // 键盘快捷键
             document.addEventListener('keydown', (e) => {
-                if (e.key === 'n' && e.ctrlKey) {
-                    e.preventDefault();
-                    startNewGame();
-                }
-                if (e.key === 'm' && e.ctrlKey) {
-                    e.preventDefault();
-                    setGameMode(gameMode === 'ai' ? 'manual' : 'ai');
-                }
+                if (e.key === 'n' && e.ctrlKey) { e.preventDefault(); startNewGame(); }
+                if (e.key === 'm' && e.ctrlKey) { e.preventDefault(); setGameMode(gameMode === 'ai' ? 'manual' : 'ai'); }
             });
 
-            // ============ 窗口大小变化时重新渲染 ============
             let resizeDebounceTimer;
             window.addEventListener('resize', () => {
                 clearTimeout(resizeDebounceTimer);
                 resizeDebounceTimer = setTimeout(() => {
                     renderBoard();
+                    showValidMoves();
                 }, 250);
             });
 
-            // ============ 启动游戏 ============
             function init() {
                 createBoardDOM();
                 initAvatars();
                 updateModeButtons();
+                updateDifficultyButtons();
+                updateDifficultyVisibility();
                 updateOpponentName();
                 startNewGame();
             }
 
             init();
 
-            console.log('🔄 翻转棋游戏已就绪！');
-            console.log('📌 模式切换：点击顶部按钮选择"人机对战"或"双人对战"');
-            console.log('🖼️ 头像设置：在代码中搜索 PLAYER_AVATAR_URL 和 OPPONENT_AVATAR_URL');
-            console.log('⌨️ 快捷键：Ctrl+N 新游戏 | Ctrl+M 切换模式');
-            console.log('🎯 黑棋（玩家）先行，祝你好运！');
+            console.log('🔄 翻转棋已就绪！难度：简单/困难，切换人机模式可显示。');
         })();
     </script>
 </body>
