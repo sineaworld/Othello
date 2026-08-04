@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>翻转棋 · 难度与头像互换</title>
+    <title>翻转棋 · 黑塔利亚角色扮演</title>
     <style>
         :root {
-            --cell-size: clamp(40px, 10vw, 58px);
+            --cell-size: clamp(38px, 10vw, 56px);
             --board-gap: 2px;
             --bg-color: #1a1a2e;
             --board-bg: #2d6a4f;
@@ -15,13 +15,14 @@
             --cell-hover: #52b788;
             --text-color: #e0e0e0;
             --accent: #f4a261;
-            --accent-hover: #e76f51;
             --valid-move-dot: rgba(255, 255, 255, 0.55);
             --panel-bg: #16213e;
             --panel-border: #0f3460;
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-            --avatar-size-desktop: 90px;
-            --avatar-size-mobile: 55px;
+            --avatar-size-desktop: 85px;
+            --avatar-size-mobile: 50px;
+            --dialogue-bg: #1e2a3a;
+            --dialogue-border: #f4a261;
         }
 
         * {
@@ -42,22 +43,21 @@
             -webkit-tap-highlight-color: transparent;
             user-select: none;
             -webkit-user-select: none;
-            -webkit-touch-callout: none;
         }
 
         .game-wrapper {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 16px;
+            gap: 10px;
             width: 100%;
             max-width: 750px;
         }
 
         .game-title {
-            font-size: clamp(1.4rem, 3.5vw, 2rem);
+            font-size: clamp(1.3rem, 3.5vw, 1.8rem);
             font-weight: 700;
-            letter-spacing: 0.06em;
+            letter-spacing: 0.05em;
             color: var(--accent);
             text-align: center;
             text-shadow: 0 2px 8px rgba(244, 162, 97, 0.3);
@@ -68,9 +68,9 @@
             flex-wrap: wrap;
             justify-content: center;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             width: 100%;
-            max-width: 600px;
+            max-width: 620px;
         }
 
         .mode-toggle-group,
@@ -85,26 +85,24 @@
 
         .mode-btn,
         .diff-btn {
-            padding: 10px 18px;
+            padding: 9px 15px;
             cursor: pointer;
             border: none;
             background: transparent;
             color: #aaa;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 600;
             letter-spacing: 0.03em;
             transition: all 0.3s ease;
             white-space: nowrap;
             font-family: inherit;
         }
-
         .mode-btn.active,
         .diff-btn.active {
             background: var(--accent);
             color: #1a1a2e;
             box-shadow: 0 2px 10px rgba(244, 162, 97, 0.4);
         }
-
         .mode-btn:hover:not(.active),
         .diff-btn:hover:not(.active) {
             color: #ddd;
@@ -113,33 +111,30 @@
 
         .btn-new-game,
         .btn-swap-avatars {
-            padding: 10px 22px;
+            padding: 9px 18px;
             cursor: pointer;
             border: 2px solid var(--accent);
             background: transparent;
             color: var(--accent);
             border-radius: 30px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 600;
             letter-spacing: 0.03em;
             transition: all 0.3s ease;
             white-space: nowrap;
             font-family: inherit;
         }
-
         .btn-new-game:hover,
         .btn-swap-avatars:hover {
             background: var(--accent);
             color: #1a1a2e;
             box-shadow: 0 2px 14px rgba(244, 162, 97, 0.5);
         }
-
         .btn-swap-avatars {
             border-color: #9b59b6;
             color: #d4a5f0;
             background: transparent;
         }
-
         .btn-swap-avatars:hover {
             background: #9b59b6;
             color: white;
@@ -149,40 +144,36 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 20px;
+            gap: 16px;
             width: 100%;
         }
 
-        /* 玩家面板 */
         .player-panel {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             background: var(--panel-bg);
             border: 2px solid var(--panel-border);
-            border-radius: 16px;
-            padding: 16px 14px;
-            min-width: 110px;
+            border-radius: 14px;
+            padding: 14px 12px;
+            min-width: 100px;
             box-shadow: var(--shadow);
             transition: all 0.35s ease;
             flex-shrink: 0;
-            position: relative;
         }
-
         .player-panel.active-player {
             border-color: var(--accent);
-            box-shadow: 0 0 24px rgba(244, 162, 97, 0.5);
+            box-shadow: 0 0 22px rgba(244, 162, 97, 0.5);
             animation: pulse-border 1.8s ease-in-out infinite;
         }
-
         @keyframes pulse-border {
             0%,
             100% {
-                box-shadow: 0 0 18px rgba(244, 162, 97, 0.4);
+                box-shadow: 0 0 16px rgba(244, 162, 97, 0.4);
             }
             50% {
-                box-shadow: 0 0 32px rgba(244, 162, 97, 0.75);
+                box-shadow: 0 0 28px rgba(244, 162, 97, 0.7);
             }
         }
 
@@ -194,112 +185,96 @@
             border: 3px solid #555;
             background: #2a2a3a;
             flex-shrink: 0;
-            position: relative;
             transition: border-color 0.3s;
         }
-
         .player-panel.active-player .avatar-container {
             border-color: var(--accent);
         }
-
         .avatar-container img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: block;
         }
-
         .avatar-container.hidden-avatar {
             display: none;
         }
-
         .avatar-placeholder {
             width: 100%;
             height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.2rem;
+            font-size: 2rem;
             color: #666;
             background: #2a2a3a;
         }
-
         .avatar-container:not(.hidden-avatar) .avatar-placeholder {
             display: none;
         }
-
         .avatar-container.hidden-avatar .avatar-placeholder {
             display: flex;
         }
-
         .avatar-container.has-image .avatar-placeholder {
             display: none !important;
         }
 
         .player-name {
             font-weight: 700;
-            font-size: 0.95rem;
-            letter-spacing: 0.04em;
+            font-size: 0.85rem;
+            letter-spacing: 0.03em;
             text-align: center;
             color: #ccc;
+            line-height: 1.3;
         }
-
         .player-panel.active-player .player-name {
             color: var(--accent);
         }
-
         .player-score {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             font-weight: 800;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.04em;
             color: #fff;
         }
-
         .stone-indicator {
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 0.8rem;
+            gap: 5px;
+            font-size: 0.75rem;
             color: #999;
         }
-
         .stone-dot {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
             display: inline-block;
             flex-shrink: 0;
         }
-
         .stone-dot.black-dot {
             background: radial-gradient(circle at 35% 30%, #555, #111 70%);
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
         }
-
         .stone-dot.white-dot {
             background: radial-gradient(circle at 35% 30%, #fff, #ccc 70%);
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        /* 棋盘 */
         .board-outer {
             background: var(--board-border);
-            border-radius: 12px;
-            padding: 8px;
+            border-radius: 10px;
+            padding: 6px;
             box-shadow: var(--shadow), inset 0 0 0 2px rgba(0, 0, 0, 0.3);
             flex-shrink: 0;
         }
-
         .board-grid {
             display: grid;
             grid-template-columns: repeat(8, var(--cell-size));
             grid-template-rows: repeat(8, var(--cell-size));
             gap: var(--board-gap);
             background: var(--board-bg);
-            border-radius: 6px;
+            border-radius: 5px;
             overflow: hidden;
         }
-
         .cell {
             background: var(--cell-bg);
             cursor: pointer;
@@ -307,25 +282,22 @@
             transition: background 0.2s ease;
             border-radius: 2px;
         }
-
         .cell:hover {
             background: var(--cell-hover);
         }
-
         .cell.valid-move::after {
             content: '';
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 28%;
-            height: 28%;
+            width: 26%;
+            height: 26%;
             border-radius: 50%;
             background: var(--valid-move-dot);
             pointer-events: none;
             animation: dot-pulse 1.5s ease-in-out infinite;
         }
-
         @keyframes dot-pulse {
             0%,
             100% {
@@ -334,24 +306,12 @@
             }
             50% {
                 opacity: 0.9;
-                transform: translate(-50%, -50%) scale(1.25);
+                transform: translate(-50%, -50%) scale(1.2);
             }
         }
-
         .cell.last-move {
             box-shadow: inset 0 0 0 3px rgba(255, 215, 0, 0.85);
-            animation: last-move-glow 1.2s ease-out;
         }
-
-        @keyframes last-move-glow {
-            0% {
-                box-shadow: inset 0 0 0 6px rgba(255, 215, 0, 1);
-            }
-            100% {
-                box-shadow: inset 0 0 0 3px rgba(255, 215, 0, 0.85);
-            }
-        }
-
         .stone {
             position: absolute;
             top: 12%;
@@ -363,7 +323,6 @@
             transition: transform 0.25s ease, opacity 0.25s ease;
             animation: place-stone 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-
         @keyframes place-stone {
             0% {
                 transform: scale(0);
@@ -378,21 +337,17 @@
                 opacity: 1;
             }
         }
-
         .stone.black {
             background: radial-gradient(circle at 35% 28%, #5a5a5a, #111 65%);
             box-shadow: 0 3px 7px rgba(0, 0, 0, 0.6), inset 0 -2px 3px rgba(0, 0, 0, 0.4);
         }
-
         .stone.white {
             background: radial-gradient(circle at 35% 28%, #ffffff, #c8c8c8 65%);
             box-shadow: 0 3px 7px rgba(0, 0, 0, 0.35), inset 0 -2px 3px rgba(0, 0, 0, 0.15);
         }
-
         .stone.flipping {
             animation: flip-stone 0.4s ease-in-out;
         }
-
         @keyframes flip-stone {
             0% {
                 transform: rotateY(0) scale(1);
@@ -406,91 +361,120 @@
         }
 
         .status-message {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 500;
             color: #bbb;
             text-align: center;
-            min-height: 1.5em;
+            min-height: 1.4em;
             letter-spacing: 0.03em;
+            transition: color 0.3s;
         }
-
         .status-message.warning {
             color: #f4a261;
         }
-
         .status-message.victory {
             color: #ffd700;
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 0.95rem;
+        }
+
+        /* 对话气泡 */
+        .dialogue-box {
+            background: var(--dialogue-bg);
+            border: 2px solid var(--dialogue-border);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-top: 4px;
+            text-align: center;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #f0d78c;
+            letter-spacing: 0.04em;
+            box-shadow: 0 0 18px rgba(244, 162, 97, 0.25);
+            animation: fadeInUp 0.5s ease-out;
+            max-width: 500px;
+            width: 100%;
+            display: none;
+        }
+        .dialogue-box.show {
+            display: block;
+        }
+        .dialogue-box .line {
+            display: block;
+            margin: 2px 0;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* 响应式 */
         @media (max-width: 768px) {
             :root {
-                --cell-size: clamp(36px, 10.5vw, 50px);
+                --cell-size: clamp(34px, 10.5vw, 48px);
                 --avatar-size-desktop: var(--avatar-size-mobile);
             }
-
             .main-game-area {
                 flex-direction: column;
-                gap: 12px;
+                gap: 10px;
             }
-
             .players-row {
                 display: flex;
-                gap: 12px;
+                gap: 10px;
                 width: 100%;
                 justify-content: center;
                 order: -1;
             }
-
             .player-panel {
                 flex-direction: row;
                 flex-wrap: wrap;
                 justify-content: center;
-                gap: 8px;
-                padding: 10px 12px;
+                gap: 6px;
+                padding: 8px 10px;
                 min-width: auto;
                 flex: 1;
-                max-width: 180px;
+                max-width: 170px;
                 border-radius: 12px;
             }
-
             .player-panel .avatar-container {
                 width: var(--avatar-size-mobile);
                 height: var(--avatar-size-mobile);
                 border-width: 2px;
             }
-
             .player-panel .player-name {
-                font-size: 0.8rem;
-            }
-            .player-panel .player-score {
-                font-size: 1.3rem;
-            }
-            .player-panel .stone-indicator {
                 font-size: 0.7rem;
             }
-
+            .player-panel .player-score {
+                font-size: 1.2rem;
+            }
             .controls-bar {
-                gap: 8px;
+                gap: 6px;
             }
             .mode-btn,
             .diff-btn {
-                padding: 8px 14px;
-                font-size: 0.8rem;
+                padding: 7px 12px;
+                font-size: 0.75rem;
             }
             .btn-new-game,
             .btn-swap-avatars {
-                padding: 8px 16px;
-                font-size: 0.8rem;
+                padding: 7px 14px;
+                font-size: 0.75rem;
             }
-
             .player-panel-desktop {
                 display: none;
             }
+            .dialogue-box {
+                font-size: 0.8rem;
+                padding: 10px 12px;
+                max-width: 90vw;
+            }
         }
-
         @media (min-width: 769px) {
             .players-row {
                 display: none;
@@ -499,44 +483,62 @@
                 display: flex;
             }
         }
+        @media (max-width: 380px) {
+            :root {
+                --cell-size: clamp(28px, 11vw, 36px);
+            }
+            .player-panel {
+                padding: 5px 7px;
+                gap: 4px;
+                max-width: 140px;
+            }
+            .player-panel .avatar-container {
+                width: 38px;
+                height: 38px;
+            }
+            .player-panel .player-name {
+                font-size: 0.65rem;
+            }
+            .player-panel .player-score {
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="game-wrapper">
-        <h1 class="game-title">🔄 翻转棋 Othello</h1>
+        <h1 class="game-title">🔄 翻转棋 · 北欧对决</h1>
 
-        <!-- 控制栏 -->
         <div class="controls-bar">
             <div class="mode-toggle-group" id="modeToggleGroup">
                 <button class="mode-btn active" data-mode="ai" id="btnModeAI">🤖 人机对战</button>
                 <button class="mode-btn" data-mode="manual" id="btnModeManual">👥 双人对战</button>
             </div>
-            <!-- 难度选择（仅人机可见） -->
             <div class="difficulty-group" id="difficultyGroup">
-                <button class="diff-btn active" data-diff="1" id="btnDiff1">⭐ 难度1</button>
-                <button class="diff-btn" data-diff="2" id="btnDiff2">⭐⭐ 难度2</button>
+                <button class="diff-btn active" data-diff="1" id="btnDiff1">🇩🇰 丁马克</button>
+                <button class="diff-btn" data-diff="2" id="btnDiff2">🇳🇴 诺威</button>
             </div>
             <button class="btn-new-game" id="btnNewGame">🔄 新游戏</button>
-            <!-- 双人头像互换按钮（仅双人可见） -->
             <button class="btn-swap-avatars" id="btnSwapAvatars" style="display:none;">🔄 互换头像</button>
         </div>
 
         <div class="status-message" id="statusMessage">黑棋先行，请落子</div>
 
-        <!-- 主区域 -->
+        <!-- 结局对话区域 -->
+        <div class="dialogue-box" id="dialogueBox"></div>
+
         <div class="main-game-area">
             <!-- 桌面端左侧面板 -->
             <div class="player-panel player-panel-desktop active-player" id="panelPlayerDesktop">
                 <div class="avatar-container hidden-avatar" id="avatarContainerPlayerDesktop">
                     <div class="avatar-placeholder">👤</div>
-                    <img src="" alt="玩家头像" onerror="handleAvatarError(this,'avatarContainerPlayerDesktop')" onload="handleAvatarLoad(this,'avatarContainerPlayerDesktop')" id="imgPlayerDesktop">
+                    <img src="" alt="头像" onerror="handleAvatarError(this,'avatarContainerPlayerDesktop')" onload="handleAvatarLoad(this,'avatarContainerPlayerDesktop')" id="imgPlayerDesktop">
                 </div>
                 <div class="player-name" id="playerNameDesktop">⚫ 玩家（黑棋）</div>
                 <div class="player-score" id="scorePlayerDesktop">2</div>
                 <div class="stone-indicator"><span class="stone-dot black-dot"></span> 黑棋</div>
             </div>
 
-            <!-- 棋盘 -->
             <div class="board-outer">
                 <div class="board-grid" id="boardGrid"></div>
             </div>
@@ -545,19 +547,19 @@
             <div class="player-panel player-panel-desktop" id="panelOpponentDesktop">
                 <div class="avatar-container hidden-avatar" id="avatarContainerOpponentDesktop">
                     <div class="avatar-placeholder">👤</div>
-                    <img src="" alt="对手头像" onerror="handleAvatarError(this,'avatarContainerOpponentDesktop')" onload="handleAvatarLoad(this,'avatarContainerOpponentDesktop')" id="imgOpponentDesktop">
+                    <img src="" alt="头像" onerror="handleAvatarError(this,'avatarContainerOpponentDesktop')" onload="handleAvatarLoad(this,'avatarContainerOpponentDesktop')" id="imgOpponentDesktop">
                 </div>
                 <div class="player-name" id="opponentNameDesktop">🤖 AI（白棋）</div>
                 <div class="player-score" id="scoreOpponentDesktop">2</div>
                 <div class="stone-indicator"><span class="stone-dot white-dot"></span> 白棋</div>
             </div>
 
-            <!-- 移动端面板行 -->
+            <!-- 移动端面板 -->
             <div class="players-row" id="playersRowMobile">
                 <div class="player-panel active-player" id="panelPlayerMobile">
                     <div class="avatar-container hidden-avatar" id="avatarContainerPlayerMobile">
                         <div class="avatar-placeholder">👤</div>
-                        <img src="" alt="玩家头像" onerror="handleAvatarError(this,'avatarContainerPlayerMobile')" onload="handleAvatarLoad(this,'avatarContainerPlayerMobile')" id="imgPlayerMobile">
+                        <img src="" alt="头像" onerror="handleAvatarError(this,'avatarContainerPlayerMobile')" onload="handleAvatarLoad(this,'avatarContainerPlayerMobile')" id="imgPlayerMobile">
                     </div>
                     <div class="player-name" id="playerNameMobile">⚫ 玩家</div>
                     <div class="player-score" id="scorePlayerMobile">2</div>
@@ -565,7 +567,7 @@
                 <div class="player-panel" id="panelOpponentMobile">
                     <div class="avatar-container hidden-avatar" id="avatarContainerOpponentMobile">
                         <div class="avatar-placeholder">👤</div>
-                        <img src="" alt="对手头像" onerror="handleAvatarError(this,'avatarContainerOpponentMobile')" onload="handleAvatarLoad(this,'avatarContainerOpponentMobile')" id="imgOpponentMobile">
+                        <img src="" alt="头像" onerror="handleAvatarError(this,'avatarContainerOpponentMobile')" onload="handleAvatarLoad(this,'avatarContainerOpponentMobile')" id="imgOpponentMobile">
                     </div>
                     <div class="player-name" id="opponentNameMobile">🤖 AI</div>
                     <div class="player-score" id="scoreOpponentMobile">2</div>
@@ -576,35 +578,55 @@
 
     <script>
         (function() {
-            // ==================== 头像配置 ====================
             /*
-             * ★★★ 在这里粘贴您的三个头像链接 ★★★
-             * 图片尺寸：800×800px，留空或加载失败则不显示头像
+             * =======================================================
+             * ★★★ 头像URL配置处 ★★★
+             * 请替换为您的三个头像图片链接（800×800px）
+             * 留空或加载失败则不显示头像，不影响游戏
+             * =======================================================
              */
-            const AVATAR_PLAYER = '';   // 玩家头像（头像0）
-            const AVATAR_OPPONENT_1 = '1.jpg'; // 对手头像1（难度1使用）
-            const AVATAR_OPPONENT_2 = '2.jpg'; // 对手头像2（难度2使用）
+            const AVATAR_PLAYER = ''; // 头像0：玩家自己的头像
+            const AVATAR_DINGMAKE = '1.png'; // 头像1：丁马克（丹麦）的头像，难度1使用
+            const AVATAR_NUOWEI = '2.png'; // 头像2：诺威（挪威）的头像，难度2使用
+            /*
+             * =======================================================
+             * 示例：
+             * const AVATAR_PLAYER = 'https://example.com/player.jpg';
+             * const AVATAR_DINGMAKE = 'https://example.com/denmark.jpg';
+             * const AVATAR_NUOWEI = 'https://example.com/norway.jpg';
+             * =======================================================
+             */
 
-            // ==================== 常量 ====================
-            const EMPTY = 0, BLACK = 1, WHITE = 2;
+            const EMPTY = 0,
+                BLACK = 1,
+                WHITE = 2;
             const DIRECTIONS = [
-                [-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]
+                [-1, -1],
+                [-1, 0],
+                [-1, 1],
+                [0, -1],
+                [0, 1],
+                [1, -1],
+                [1, 0],
+                [1, 1]
             ];
 
-            // ==================== 状态 ====================
-            let board = [];
-            let currentPlayer = BLACK;
-            let gameOver = false;
-            let lastMoveRow = -1, lastMoveCol = -1;
-            let gameMode = 'ai';      // 'ai' | 'manual'
-            let difficulty = '1';    // '1' | '2'
-            let aiThinking = false;
-            let moveHistory = [];
-            let skipCount = 0;
+            // 状态
+            let board = [],
+                currentPlayer = BLACK,
+                gameOver = false,
+                lastMoveRow = -1,
+                lastMoveCol = -1;
+            let gameMode = 'ai',
+                difficulty = '1',
+                aiThinking = false,
+                moveHistory = [];
+            let dualRoleSwapped = false; // 双人模式头像是否已互换
 
-            // ==================== DOM 元素 ====================
+            // DOM
             const boardGrid = document.getElementById('boardGrid');
             const statusMessage = document.getElementById('statusMessage');
+            const dialogueBox = document.getElementById('dialogueBox');
             const btnNewGame = document.getElementById('btnNewGame');
             const btnModeAI = document.getElementById('btnModeAI');
             const btnModeManual = document.getElementById('btnModeManual');
@@ -613,7 +635,6 @@
             const btnDiff2 = document.getElementById('btnDiff2');
             const btnSwapAvatars = document.getElementById('btnSwapAvatars');
 
-            // 桌面端面板
             const panelPlayerDesktop = document.getElementById('panelPlayerDesktop');
             const panelOpponentDesktop = document.getElementById('panelOpponentDesktop');
             const scorePlayerDesktop = document.getElementById('scorePlayerDesktop');
@@ -625,7 +646,6 @@
             const avatarContainerPlayerDesktop = document.getElementById('avatarContainerPlayerDesktop');
             const avatarContainerOpponentDesktop = document.getElementById('avatarContainerOpponentDesktop');
 
-            // 移动端面板
             const panelPlayerMobile = document.getElementById('panelPlayerMobile');
             const panelOpponentMobile = document.getElementById('panelOpponentMobile');
             const scorePlayerMobile = document.getElementById('scorePlayerMobile');
@@ -639,79 +659,264 @@
 
             let cellElements = [];
 
-            // 位置权重表（用于AI）
             const POSITION_WEIGHTS = [
-                [100,-20,10,5,5,10,-20,100],
-                [-20,-50,-2,-2,-2,-2,-50,-20],
-                [10,-2,1,1,1,1,-2,10],
-                [5,-2,1,0,0,1,-2,5],
-                [5,-2,1,0,0,1,-2,5],
-                [10,-2,1,1,1,1,-2,10],
-                [-20,-50,-2,-2,-2,-2,-50,-20],
-                [100,-20,10,5,5,10,-20,100]
+                [100, -20, 10, 5, 5, 10, -20, 100],
+                [-20, -50, -2, -2, -2, -2, -50, -20],
+                [10, -2, 1, 1, 1, 1, -2, 10],
+                [5, -2, 1, 0, 0, 1, -2, 5],
+                [5, -2, 1, 0, 0, 1, -2, 5],
+                [10, -2, 1, 1, 1, 1, -2, 10],
+                [-20, -50, -2, -2, -2, -2, -50, -20],
+                [100, -20, 10, 5, 5, 10, -20, 100]
+            ];
+
+            // ==================== 结局对话数据 ====================
+            // 丁马克（丹麦）对话 — 按局势索引: 0绝胜 1大胜 2小胜 3平局 4惜败 5大败 6惨败
+            const DIALOGUES_DINGMAKE = [
+                [ // 绝胜
+                    '哈哈哈！我大获全胜！你完全不是对手嘛！', '看到没？这就是北欧之王的实力！',
+                    '抱歉抱歉，一不小心就认真起来了～', '棋子全变成俺的颜色了，真壮观！',
+                    '和你玩挺开心，虽然我完全碾压了！', '要不要我放点水？啊，已经结束啦？',
+                    '再来一局？保证还是我赢！', '在翻转棋上俺可不会输！',
+                    '这就是实力的差距，别灰心！', '痛快！你还得多练练才能挑战俺！'
+                ],
+                [ // 大胜
+                    '赢啦！我今天状态绝佳！', '哈哈，差一点就全盘占领了，可惜！',
+                    '怎么样，见识到俺的厉害了吧？', '果然还是我比较强啊！',
+                    '你下的也不错，只是对手太强了！', '轻松轻松～下次再让你几子？',
+                    '俺的战术可是千锤百炼的！', '差距很明显，不过你很有潜力哦！',
+                    '大胜利！来，为胜者干杯！', '今天棋盘都在高呼我的名字！'
+                ],
+                [ // 小胜
+                    '呼，险胜险胜！你挺能干的嘛！', '只赢了一点点，我差点就输了……',
+                    '好危险！你这家伙深藏不露啊！', '能把我逼到这地步，你不错啊！',
+                    '胜利就是胜利！哪怕只多一个子！', '心跳加速了！这才是好对局！',
+                    '看来俺小看你了，下次不会啦！', '嘿嘿，最后那手是胜招！',
+                    '差一点被翻盘，好刺激！', '呜，虽然赢了但手心都是汗……'
+                ],
+                [ // 平局
+                    '居然平手？这怎么可能！', '第一次遇到和俺完全平局的人，有趣！',
+                    '哈哈，棋盘都分不出胜负，真有你的！', '平局……我居然没赢过你！',
+                    '好吧，这场算我们打和！握手！', '旗鼓相当啊，这种对局最棒了！',
+                    '没想到还有能和俺下平局的人类！', '不分胜负，看来得用啤酒一决高下了！',
+                    '哎呀，平分秋色，下次再战！', '这可不行，平局感觉像没打完，再来！'
+                ],
+                [ // 惜败
+                    '什么？我居然输了一点点？！', '呜…就差那么一步，可恶！',
+                    '是你运气好啦！下次一定赢回来！', '呃，居然会败北，今天风向不对。',
+                    '只差一点！我不甘心！', '你偷偷特训了吗？棋力见长啊！',
+                    '好吧，这次算你厉害，但只是今天！', '输给朋友倒也不坏，但下次可不会了！',
+                    '不可能！我的棋路居然被看穿了？', '嘁，下次俺要认真了，绝对碾压你！'
+                ],
+                [ // 大败
+                    '惨了……被狠狠摆了一道啊。', '你真的是人类吗？不会是诺子假扮的吧？',
+                    '今天完全不行，脑袋转不动……', '呜哇，输得这么难看，太丢脸了！',
+                    '俺的北欧之王的尊严……', '完全被你压制了，佩服！',
+                    '这局不算！俺昨晚没睡好！', '可恶，你等着，我要闭关修炼！',
+                    '好强……你比诺子还会下棋吗？', '我居然毫无还手之力，不敢相信。'
+                ],
+                [ // 惨败
+                    '全灭？！我的棋子呢？！', '这简直是噩梦……俺不想面对现实。',
+                    '你、你一点都没留情啊！', '输得连渣都不剩……太打击人了。',
+                    '莫非你是翻转棋之神？！', '啊啊啊，连一格都没给俺留下！',
+                    '我的人生头一次这么惨败……', '这不科学！棋盘被诅咒了吧！',
+                    '瞬间就被吃光了，俺要回家找诺子安慰……', '我……我还是去喝啤酒吧，太受打击了。'
+                ]
+            ];
+
+            // 诺威（挪威）对话
+            const DIALOGUES_NUOWEI = [
+                [ // 绝胜
+                    '……结束了。你还需要练习。', '只是理所当然的结果。',
+                    '棋盘上不会有奇迹。', '完全碾压，有点无聊了。',
+                    '你确定要挑战我？', '不要在意，输给我是正常的。',
+                    '这种程度，连热身都算不上。', '你，完全没有胜算。',
+                    '看来你并没有理解游戏规则。', '平静的胜利，没什么特别。'
+                ],
+                [ // 大胜
+                    '赢了不少。还可以吧。', '你的棋路太容易预判了。',
+                    '这差距，大概是你今天运气不好。', '嗯，比刚才那局顺手一些。',
+                    '别再犯同样的错误了。', '安安静静就赢了。',
+                    '果然，我的计算没错。', '赢太多有点抱歉。',
+                    '和我下棋，你该更谨慎。', '胜利，如同北海的薄雾一般自然。'
+                ],
+                [ // 小胜
+                    '险胜……你的棋有些意思。', '差点被翻盘，大意了。',
+                    '能让我认真起来，值得夸奖。', '这一步之差，就是胜负。',
+                    '你比外表看起来要狡猾。', '我不讨厌势均力敌的对手。',
+                    '赢得很微妙，下次别指望了。', '终于结束了，有点累。',
+                    '只多一子，也是胜利。', '最后的形势真让人窒息。'
+                ],
+                [ // 平局
+                    '平局吗……真是罕见。', '我和你居然不相上下，有趣。',
+                    '棋盘上的僵局，像冬天的冰原。', '没有胜者，也没有败者，无聊。',
+                    '我原以为能赢，小看你了。', '这种结果，也不坏。',
+                    '好吧，算你守住了。', '打和，下次我会打破平衡。',
+                    '难得遇到能和我下平的人。', '棋子在互相凝视，无法动弹。'
+                ],
+                [ // 惜败
+                    '我输了一点……有意思。', '今天风向变了。',
+                    '是你赢了，恭喜。', '偶尔这样也不错。',
+                    '我犯了个小错，你抓住了。', '输棋也像阵雨，很快会停。',
+                    '承认失败，没有不甘。', '你比想象中强大。',
+                    '精灵也会被算计，警惕了。', '好吧，暂时把胜利让给你。'
+                ],
+                [ // 大败
+                    '……被你完全打败了。', '今天我不在状态。',
+                    '看来你研究过我的棋路。', '差距明显，是我懈怠了。',
+                    '像薄冰一样碎裂的防线。', '这种败北，很久没尝过了。',
+                    '你下了盘好棋，值得鼓掌。', '没什么，胜败常事。',
+                    '要去找丹麦那家伙发泄了。', '我可能有点困了，影响了判断。'
+                ],
+                [ // 惨败
+                    '全军覆没……毫无面子。', '简直就是暴风雨席卷了我的棋子。',
+                    '……难以置信，这种败北，好久没有了。', '输到这种地步，连吐槽的力气都没了。',
+                    '承认，你今天完全凌驾于我之上。', '罕见的大惨败，可以记入史册了。',
+                    '棋盘上只剩你的颜色，像丹麦占领了我的房间。', '一点渣都不剩，真是干脆。',
+                    '这种结果，我会记住的。', '好吧，是我太松懈了，下次会让你看到真正的我。'
+                ]
+            ];
+
+            // 丹麦vs挪威互动对话 — 每项为 [丹对话, 挪对话]
+            const DIALOGUES_DUAL = [
+                [ // 丹麦绝胜(挪威惨败)
+                    ['诺子～你看看，棋盘上全是俺的颜色！', '吵死了，只是我一时大意。'],
+                    ['我全胜！诺子要给我什么奖励？', '……没有，离我远点。'],
+                    ['哈哈，诺子你今天的棋简直像在梦游！', '闭嘴，下次不会再让你。'],
+                    ['赢啦赢啦！诺子快夸夸俺！', '……勉为其难说句"还行"。'],
+                    ['把诺子打得落花流水，真是大满足！', '白痴，热死了别靠过来。'],
+                    ['这就是咱俩的实力差距，认命吧诺子！', '……晚上别想进卧室。'],
+                    ['全盘制霸！俺是不是超帅？', '普通。别傻笑了。'],
+                    ['诺子你该不会是故意让俺的吧？', '怎么可能，只是今天运气差。'],
+                    ['胜利的滋味和诺子一样甜～', '……恶心，不准说这种话。'],
+                    ['看到没？这就是北欧之王的真正实力！', '是是是，王请安静点。']
+                ],
+                [ // 丹麦大胜
+                    ['大胜利！诺子，咱们去吃你做的薄煎饼庆祝！', '……为什么我输了还要做饭。'],
+                    ['差距很明显嘛，诺子你得好好锻炼了。', '是你太缠人，分心了。'],
+                    ['嘿嘿，诺子被我压着打的感觉如何？', '无聊，别耍嘴皮子。'],
+                    ['今天俺的手感火热，诺子太冷淡所以输啦！', '跟那没关系。'],
+                    ['赢了好多，诺子会不会不甘心？', '……稍微有点。下次别哭。'],
+                    ['让你总说我吵，棋盘上可安静不了！', '果然又吵又烦。'],
+                    ['诺子，输棋惩罚就是今天要陪俺喝到天亮！', '本来也没打算早睡。'],
+                    ['唉呀，不小心又赢了诺子，会不会被讨厌？', '……早习惯了。'],
+                    ['俺的战术完美无缺！诺子要学吗？', '不学，你那只是莽撞。'],
+                    ['为了赢诺子，俺可是偷偷练了好久！', '……笨蛋，多练练家务比较好。']
+                ],
+                [ // 丹麦小胜
+                    ['好险！差一点就被诺子反杀了！', '啧，就差一步。'],
+                    ['只赢一子，心跳到现在还加速呢。', '那你去休息，别抱着我。'],
+                    ['诺子真厉害，俺差点就要输掉帅气的形象了。', '你从来就没有形象。'],
+                    ['险胜～诺子，这叫爱之力量！', '……别什么都扯上爱。'],
+                    ['最后那手诺子没看到吗？还是故意让俺？', '是我失误，不甘心。'],
+                    ['诺子输了一点点，脸色好可怕。', '我没生气，只是觉得冷。'],
+                    ['要不再来一局？俺觉得还能赢！', '……可以，但你先松手。'],
+                    ['今天咱们简直是棋逢对手，不愧是俺的诺子！', '谁是你的，别贴。'],
+                    ['小胜也是胜，诺子要承认俺比较强哦。', '只是这次，别得意。'],
+                    ['呼呼，这局棋下得真愉快，诺子呢？', '……不坏。']
+                ],
+                [ // 平局
+                    ['平局！咱们还真是心意相通啊！', '只是偶然。'],
+                    ['连棋盘都知道咱俩不能分开～', '……别过度解读。'],
+                    ['诺子和俺打平，这不就是天生一对嘛！', '吵死了，闭嘴。'],
+                    ['居然平手，诺子是不是放水了？', '没有，是你变强了点。'],
+                    ['谁也不赢，那就算一起胜利！来抱抱！', '……不要。'],
+                    ['这样不分胜负的结局，像咱俩的关系一样。', '……什么关系，别说。'],
+                    ['棋盘都看不下去咱们相争了。', '是是，那停战喝茶。'],
+                    ['诺子，平局的话，今天谁做晚饭？', '石头剪刀布。'],
+                    ['能和诺子平手超开心！下次俺会赢！', '别期待。'],
+                    ['棋子全混在一起分不清了，就像咱们北欧组！', '这比喻太怪了。']
+                ],
+                [ // 丹麦惜败(挪威小胜)
+                    ['啊啊，诺子赢了一点点，俺好不甘心！', '活该，谁让你总攻角。'],
+                    ['诺子居然偷偷变强了？是不是趁我睡觉练棋？', '是你太大意了。'],
+                    ['输给诺子……虽然不爽但有点高兴是怎么回事。', '……笨蛋。'],
+                    ['只差一子！下次俺绝对要赢回来！', '等你，不过结果一样。'],
+                    ['诺子认真起来果然厉害，俺认输啦。', '……偶尔坦率也不错。'],
+                    ['呜，被诺子将了一军，晚上得好好惩罚你～', '谁惩罚谁还不一定。'],
+                    ['今天让诺子赢了，就当是北欧和平协议！', '强词夺理。'],
+                    ['诺子赢棋的样子真好看，多看几眼也值了。', '……别盯着看，下棋。'],
+                    ['可恶，俺的连胜纪录被诺子打破了！', '你哪来的连胜。'],
+                    ['好吧，胜者诺威，有什么吩咐？', '安静待着就行。']
+                ],
+                [ // 丹麦大败(挪威大胜)
+                    ['呜哇，被诺子打得体无完肤！', '是你太吵了，没法集中。'],
+                    ['诺子好强，俺完全不是对手，要安慰！', '……给你一杯咖啡。'],
+                    ['这差距，难道诺子平时都在隐藏实力？', '没有，只是你太弱。'],
+                    ['惨败给诺子，俺的威严扫地……', '你本来就没有威严。'],
+                    ['诺子笑着碾压俺的样子好冷酷，但是喜欢～', '我没笑，别瞎说。'],
+                    ['今天状态不好，肯定是因为诺子没亲我！', '……别找借口。'],
+                    ['输惨了，诺子要负起责任照顾俺！', '为什么是我？'],
+                    ['被诺子这样那样玩弄于棋盘，虽然输了但也不错。', '……不要说让人误会的话。'],
+                    ['诺子，作为赢家，你忍心看俺这么失落吗？', '忍心，去睡一觉。'],
+                    ['俺认输！诺子天下第一！来让俺抱抱庆祝你的胜利！', '别过来，热。']
+                ],
+                [ // 丹麦惨败(挪威绝胜)
+                    ['棋盘上一颗俺的棋子都没了？！诺子你是恶魔吗！', '只是普通的棋。'],
+                    ['惨败到这种地步，俺要去跳波罗的海！', '要去自己去，别拉我。'],
+                    ['诺子今天好可怕，完全没留情面……', '对你就该这样。'],
+                    ['全灭……俺的心和棋子一样碎了，要诺子亲亲才能好。', '……想得美。'],
+                    ['诺子，你是不是被什么上身了？精灵王？', '是你太烦，全力排除而已。'],
+                    ['这比北海的冬天还冷酷的败北！', '比喻太夸张。'],
+                    ['诺子，俺输了，今晚任你处置～', '不需要，自己去睡沙发。'],
+                    ['一点渣都不剩，诺子你是不是很讨厌俺？', '……不讨厌，只是不想输。'],
+                    ['俺的北欧美梦被诺子粉碎了！', '只是个游戏，别嚎了。'],
+                    ['呜呜，诺子赢成这样，俺反而更心动了～', '……闭嘴，不然再来一局。']
+                ]
             ];
 
             // ==================== 头像处理 ====================
             window.handleAvatarError = function(img, containerId) {
-                const container = document.getElementById(containerId);
-                if (container) {
-                    container.classList.add('hidden-avatar');
-                    container.classList.remove('has-image');
-                }
+                const c = document.getElementById(containerId);
+                if (c) { c.classList.add('hidden-avatar');
+                    c.classList.remove('has-image'); }
             };
-
             window.handleAvatarLoad = function(img, containerId) {
-                const container = document.getElementById(containerId);
-                if (container && img.src && img.src.trim() !== '') {
-                    container.classList.remove('hidden-avatar');
-                    container.classList.add('has-image');
-                }
+                const c = document.getElementById(containerId);
+                if (c && img.src && img.src.trim()) { c.classList.remove('hidden-avatar');
+                    c.classList.add('has-image'); }
             };
 
-            function setAvatarSrc(imgElement, url) {
-                if (!imgElement) return;
-                imgElement.src = url || '';
-                // 手动触发一次onload/onerror检查（因为如果之前src相同可能不触发）
-                const container = imgElement.closest('.avatar-container');
-                if (container) {
-                    if (url && url.trim() !== '') {
-                        // 浏览器会自动触发onload/onerror
-                    } else {
-                        container.classList.add('hidden-avatar');
-                        container.classList.remove('has-image');
-                    }
+            function setAvatarSrc(imgEl, url) {
+                if (!imgEl) return;
+                imgEl.src = url || '';
+                const c = imgEl.closest('.avatar-container');
+                if (c) {
+                    if (url && url.trim()) { /* 浏览器触发onload/onerror */ } else { c.classList.add(
+                        'hidden-avatar');
+                        c.classList.remove('has-image'); }
                 }
             }
 
             function updateAllAvatars() {
-                // 根据当前模式和难度设置头像
                 if (gameMode === 'ai') {
-                    // 玩家始终使用头像0
                     setAvatarSrc(imgPlayerDesktop, AVATAR_PLAYER);
                     setAvatarSrc(imgPlayerMobile, AVATAR_PLAYER);
-                    // 对手根据难度
-                    const oppUrl = difficulty === '1' ? AVATAR_OPPONENT_1 : AVATAR_OPPONENT_2;
+                    const oppUrl = difficulty === '1' ? AVATAR_DINGMAKE : AVATAR_NUOWEI;
                     setAvatarSrc(imgOpponentDesktop, oppUrl);
                     setAvatarSrc(imgOpponentMobile, oppUrl);
                 } else {
-                    // 双人模式：左侧玩家用头像1，右侧对手用头像2（可互换）
-                    setAvatarSrc(imgPlayerDesktop, AVATAR_OPPONENT_1);
-                    setAvatarSrc(imgPlayerMobile, AVATAR_OPPONENT_1);
-                    setAvatarSrc(imgOpponentDesktop, AVATAR_OPPONENT_2);
-                    setAvatarSrc(imgOpponentMobile, AVATAR_OPPONENT_2);
+                    if (!dualRoleSwapped) {
+                        setAvatarSrc(imgPlayerDesktop, AVATAR_DINGMAKE);
+                        setAvatarSrc(imgPlayerMobile, AVATAR_DINGMAKE);
+                        setAvatarSrc(imgOpponentDesktop, AVATAR_NUOWEI);
+                        setAvatarSrc(imgOpponentMobile, AVATAR_NUOWEI);
+                    } else {
+                        setAvatarSrc(imgPlayerDesktop, AVATAR_NUOWEI);
+                        setAvatarSrc(imgPlayerMobile, AVATAR_NUOWEI);
+                        setAvatarSrc(imgOpponentDesktop, AVATAR_DINGMAKE);
+                        setAvatarSrc(imgOpponentMobile, AVATAR_DINGMAKE);
+                    }
                 }
             }
 
             function swapDualAvatars() {
                 if (gameMode !== 'manual') return;
-                // 交换桌面端头像
-                const tmpDesktop = imgPlayerDesktop.src;
-                setAvatarSrc(imgPlayerDesktop, imgOpponentDesktop.src);
-                setAvatarSrc(imgOpponentDesktop, tmpDesktop);
-                // 交换移动端头像
-                const tmpMobile = imgPlayerMobile.src;
-                setAvatarSrc(imgPlayerMobile, imgOpponentMobile.src);
-                setAvatarSrc(imgOpponentMobile, tmpMobile);
+                dualRoleSwapped = !dualRoleSwapped;
+                updateAllAvatars();
+                updateNames();
+                // 如果游戏已结束，刷新对话
+                if (gameOver) showEndDialogue();
             }
 
             // ==================== 棋盘逻辑 ====================
@@ -726,10 +931,8 @@
                         cell.dataset.row = r;
                         cell.dataset.col = c;
                         cell.addEventListener('click', () => onCellClick(r, c));
-                        cell.addEventListener('touchstart', (e) => {
-                            e.preventDefault();
-                            onCellClick(r, c);
-                        });
+                        cell.addEventListener('touchstart', e => { e.preventDefault();
+                            onCellClick(r, c); });
                         boardGrid.appendChild(cell);
                         cellElements[r][c] = cell;
                     }
@@ -739,42 +942,41 @@
             function createBoard() {
                 const b = [];
                 for (let r = 0; r < 8; r++) b[r] = new Array(8).fill(EMPTY);
-                b[3][3] = WHITE; b[3][4] = BLACK;
-                b[4][3] = BLACK; b[4][4] = WHITE;
+                b[3][3] = WHITE;
+                b[3][4] = BLACK;
+                b[4][3] = BLACK;
+                b[4][4] = WHITE;
                 return b;
             }
 
-            function cloneBoard(b) { return b.map(row => [...row]); }
+            function cloneBoard(b) { return b.map(r => [...r]); }
+
             function isInBounds(r, c) { return r >= 0 && r < 8 && c >= 0 && c < 8; }
 
             function getFlips(b, row, col, player) {
                 if (!isInBounds(row, col) || b[row][col] !== EMPTY) return [];
-                const opponent = player === BLACK ? WHITE : BLACK;
+                const opp = player === BLACK ? WHITE : BLACK;
                 const flips = [];
                 for (const [dr, dc] of DIRECTIONS) {
                     const temp = [];
-                    let r = row + dr, c = col + dc;
-                    while (isInBounds(r, c) && b[r][c] === opponent) {
-                        temp.push([r, c]);
-                        r += dr; c += dc;
-                    }
-                    if (temp.length > 0 && isInBounds(r, c) && b[r][c] === player) {
-                        flips.push(...temp);
-                    }
+                    let r = row + dr,
+                        c = col + dc;
+                    while (isInBounds(r, c) && b[r][c] === opp) { temp.push([r, c]);
+                        r += dr;
+                        c += dc; }
+                    if (temp.length && isInBounds(r, c) && b[r][c] === player) flips.push(...temp);
                 }
                 return flips;
             }
 
-            function isValidMove(b, r, c, player) {
-                return getFlips(b, r, c, player).length > 0;
-            }
+            function isValidMove(b, r, c, p) { return getFlips(b, r, c, p).length > 0; }
 
-            function getValidMoves(b, player) {
-                const moves = [];
+            function getValidMoves(b, p) {
+                const m = [];
                 for (let r = 0; r < 8; r++)
                     for (let c = 0; c < 8; c++)
-                        if (isValidMove(b, r, c, player)) moves.push([r, c]);
-                return moves;
+                        if (isValidMove(b, r, c, p)) m.push([r, c]);
+                return m;
             }
 
             function makeMove(b, row, col, player) {
@@ -786,74 +988,63 @@
             }
 
             function countPieces(b) {
-                let black = 0, white = 0;
+                let bl = 0,
+                    wh = 0;
                 for (let r = 0; r < 8; r++)
-                    for (let c = 0; c < 8; c++) {
-                        if (b[r][c] === BLACK) black++;
-                        if (b[r][c] === WHITE) white++;
-                    }
-                return { black, white };
+                    for (let c = 0; c < 8; c++) { if (b[r][c] === BLACK) bl++; if (b[r][c] === WHITE) wh++; }
+                return { black: bl, white: wh };
             }
 
             // ==================== 渲染 ====================
             function clearValidMoves() {
                 for (let r = 0; r < 8; r++)
-                    for (let c = 0; c < 8; c++)
-                        cellElements[r][c].classList.remove('valid-move');
+                    for (let c = 0; c < 8; c++) cellElements[r][c].classList.remove('valid-move');
             }
 
             function showValidMoves() {
                 clearValidMoves();
                 if (gameOver || aiThinking) return;
-                const shouldShow = (gameMode === 'manual') || (gameMode === 'ai' && currentPlayer === BLACK);
-                if (shouldShow) {
-                    const moves = getValidMoves(board, currentPlayer);
-                    for (const [r, c] of moves) cellElements[r][c].classList.add('valid-move');
+                const show = (gameMode === 'manual') || (gameMode === 'ai' && currentPlayer === BLACK);
+                if (show) {
+                    const m = getValidMoves(board, currentPlayer);
+                    for (const [r, c] of m) cellElements[r][c].classList.add('valid-move');
                 }
             }
 
             function renderBoard(flippedCells = []) {
-                const flippedSet = new Set(flippedCells.map(([r, c]) => `${r},${c}`));
+                const fs = new Set(flippedCells.map(([r, c]) => `${r},${c}`));
                 for (let r = 0; r < 8; r++) {
                     for (let c = 0; c < 8; c++) {
                         const cell = cellElements[r][c];
-                        const existing = cell.querySelector('.stone');
-                        if (existing) {
-                            if (flippedSet.has(`${r},${c}`)) {
-                                existing.classList.add('flipping');
-                                setTimeout(() => updateStoneInCell(cell, board[r][c]), 200);
-                            } else if (board[r][c] === EMPTY) {
-                                existing.remove();
-                            } else {
-                                const cls = board[r][c] === BLACK ? 'black' : 'white';
-                                if (!existing.classList.contains(cls)) {
-                                    existing.classList.remove('black', 'white');
-                                    existing.classList.add(cls);
-                                }
-                            }
+                        const ex = cell.querySelector('.stone');
+                        if (ex) {
+                            if (fs.has(`${r},${c}`)) { ex.classList.add('flipping');
+                                setTimeout(() => updateStone(cell, board[r][c]), 200); } else if (board[r][
+                                    c
+                                ] === EMPTY) ex.remove();
+                            else { const cl = board[r][c] === BLACK ? 'black' : 'white'; if (!ex.classList
+                                    .contains(cl)) { ex.classList.remove('black', 'white');
+                                    ex.classList.add(cl); } }
                         } else if (board[r][c] !== EMPTY) {
-                            const stone = document.createElement('div');
-                            stone.classList.add('stone', board[r][c] === BLACK ? 'black' : 'white');
-                            cell.appendChild(stone);
+                            const s = document.createElement('div');
+                            s.classList.add('stone', board[r][c] === BLACK ? 'black' : 'white');
+                            cell.appendChild(s);
                         }
                         cell.classList.remove('last-move');
                     }
                 }
-                if (lastMoveRow >= 0 && lastMoveCol >= 0 && board[lastMoveRow][lastMoveCol] !== EMPTY) {
+                if (lastMoveRow >= 0 && lastMoveCol >= 0 && board[lastMoveRow][lastMoveCol] !== EMPTY)
                     cellElements[lastMoveRow][lastMoveCol].classList.add('last-move');
-                }
                 updateScores();
                 updatePanelHighlight();
             }
 
-            function updateStoneInCell(cell, piece) {
+            function updateStone(cell, piece) {
                 const old = cell.querySelector('.stone');
                 if (old) old.remove();
-                if (piece !== EMPTY) {
-                    const stone = document.createElement('div');
-                    stone.classList.add('stone', piece === BLACK ? 'black' : 'white');
-                    cell.appendChild(stone);
-                }
+                if (piece !== EMPTY) { const s = document.createElement('div');
+                    s.classList.add('stone', piece === BLACK ? 'black' : 'white');
+                    cell.appendChild(s); }
             }
 
             function updateScores() {
@@ -865,7 +1056,8 @@
             }
 
             function updatePanelHighlight() {
-                [panelPlayerDesktop, panelOpponentDesktop, panelPlayerMobile, panelOpponentMobile].forEach(p => p?.classList.remove('active-player'));
+                [panelPlayerDesktop, panelOpponentDesktop, panelPlayerMobile, panelOpponentMobile].forEach(p => p
+                    ?.classList.remove('active-player'));
                 if (gameOver) return;
                 if (currentPlayer === BLACK) {
                     panelPlayerDesktop?.classList.add('active-player');
@@ -878,16 +1070,24 @@
 
             function updateNames() {
                 if (gameMode === 'ai') {
+                    const aiName = difficulty === '1' ? '丁马克' : '诺威';
+                    const flag = difficulty === '1' ? '🇩🇰' : '🇳🇴';
                     playerNameDesktop.textContent = '⚫ 玩家（黑棋）';
                     playerNameMobile.textContent = '⚫ 玩家';
-                    const diffText = difficulty === '1' ? '难度1' : '难度2';
-                    opponentNameDesktop.textContent = `🤖 AI ${diffText}（白棋）`;
-                    opponentNameMobile.textContent = `🤖 AI ${diffText}`;
+                    opponentNameDesktop.textContent = `${flag} ${aiName}（白棋）`;
+                    opponentNameMobile.textContent = `${flag} ${aiName}`;
                 } else {
-                    playerNameDesktop.textContent = '⚫ 玩家1（黑棋）';
-                    playerNameMobile.textContent = '⚫ 玩家1';
-                    opponentNameDesktop.textContent = '⚪ 玩家2（白棋）';
-                    opponentNameMobile.textContent = '⚪ 玩家2';
+                    if (!dualRoleSwapped) {
+                        playerNameDesktop.textContent = '🇩🇰 丁马克（黑棋）';
+                        playerNameMobile.textContent = '🇩🇰 丁马克';
+                        opponentNameDesktop.textContent = '🇳🇴 诺威（白棋）';
+                        opponentNameMobile.textContent = '🇳🇴 诺威';
+                    } else {
+                        playerNameDesktop.textContent = '🇳🇴 诺威（黑棋）';
+                        playerNameMobile.textContent = '🇳🇴 诺威';
+                        opponentNameDesktop.textContent = '🇩🇰 丁马克（白棋）';
+                        opponentNameMobile.textContent = '🇩🇰 丁马克';
+                    }
                 }
             }
 
@@ -896,15 +1096,75 @@
                 statusMessage.className = 'status-message ' + (type || '');
             }
 
+            function hideDialogue() {
+                dialogueBox.classList.remove('show');
+                dialogueBox.innerHTML = '';
+            }
+
+            function showDialogue(text) {
+                dialogueBox.innerHTML = text;
+                dialogueBox.classList.add('show');
+            }
+
+            // ==================== 结局对话 ====================
+            function getSituationIndex(blackCount, whiteCount) {
+                const diff = blackCount - whiteCount;
+                const absDiff = Math.abs(diff);
+                const loserCount = diff > 0 ? whiteCount : blackCount;
+                if (absDiff === 0) return 3; // 平局
+                if (loserCount <= 3) return diff > 0 ? 0 : 6; // 绝胜/惨败(败方<=3子)
+                if (absDiff >= 18) return diff > 0 ? 1 : 5; // 大胜/大败
+                return diff > 0 ? 2 : 4; // 小胜/惜败
+            }
+
+            function getRandomDialogue(arr) {
+                return arr[Math.floor(Math.random() * arr.length)];
+            }
+
+            function showEndDialogue() {
+                const { black, white } = countPieces(board);
+                const sitIdx = getSituationIndex(black, white);
+                let dialogueText = '';
+
+                if (gameMode === 'ai') {
+                    const aiName = difficulty === '1' ? '丁马克' : '诺威';
+                    const dialogues = difficulty === '1' ? DIALOGUES_DINGMAKE : DIALOGUES_NUOWEI;
+                    // AI是白棋，从AI视角看局势
+                    // sitIdx是基于黑棋(玩家)视角的，需要翻转
+                    const aiSitIdx = [6, 5, 4, 3, 2, 1, 0][sitIdx]; // 玩家绝胜=AI惨败 等
+                    const msg = getRandomDialogue(dialogues[aiSitIdx]);
+                    dialogueText = `<span class="line">${aiName}：${msg}</span>`;
+                } else {
+                    // 双人模式：黑棋=丁马克(或诺威如果互换)，白棋=诺威(或丁马克)
+                    const blackRole = !dualRoleSwapped ? '丁马克' : '诺威';
+                    const whiteRole = !dualRoleSwapped ? '诺威' : '丁马克';
+                    // sitIdx是黑棋视角
+                    const pair = getRandomDialogue(DIALOGUES_DUAL[sitIdx]);
+                    // pair[0]是丹麦(丁马克)的对话，pair[1]是挪威(诺威)的对话
+                    let dingMsg, nuoMsg;
+                    if (blackRole === '丁马克') {
+                        dingMsg = pair[0];
+                        nuoMsg = pair[1];
+                    } else {
+                        dingMsg = pair[1];
+                        nuoMsg = pair[0];
+                    }
+                    dialogueText =
+                        `<span class="line">${blackRole}：${blackRole === '丁马克' ? dingMsg : nuoMsg}</span>\n<span class="line">${whiteRole}：${whiteRole === '丁马克' ? dingMsg : nuoMsg}</span>`;
+                }
+                showDialogue(dialogueText);
+            }
+
             // ==================== 游戏流程 ====================
             function startNewGame() {
                 board = createBoard();
                 currentPlayer = BLACK;
                 gameOver = false;
-                lastMoveRow = -1; lastMoveCol = -1;
+                lastMoveRow = -1;
+                lastMoveCol = -1;
                 aiThinking = false;
                 moveHistory = [];
-                skipCount = 0;
+                hideDialogue();
                 updateNames();
                 updateAllAvatars();
                 renderBoard();
@@ -917,23 +1177,15 @@
             function checkCurrentPlayerCanMove() {
                 if (gameOver) return;
                 const moves = getValidMoves(board, currentPlayer);
-                if (moves.length === 0) {
-                    skipCount++;
+                if (!moves.length) {
                     const skipped = currentPlayer;
                     currentPlayer = currentPlayer === BLACK ? WHITE : BLACK;
                     renderBoard();
                     showValidMoves();
-                    const name = skipped === BLACK ? '黑棋' : '白棋';
-                    setStatus(`${name}无法落子，回合跳过`, 'warning');
-                    const nextMoves = getValidMoves(board, currentPlayer);
-                    if (nextMoves.length === 0) {
-                        endGame();
-                        return;
-                    }
-                    skipCount = 0;
+                    setStatus(`${skipped === BLACK ? '黑棋' : '白棋'}无法落子，回合跳过`, 'warning');
+                    if (!getValidMoves(board, currentPlayer).length) { endGame(); return; }
                     if (gameMode === 'ai' && currentPlayer === WHITE && !gameOver) scheduleAIMove();
                 } else {
-                    skipCount = 0;
                     if (gameMode === 'ai' && currentPlayer === WHITE && !gameOver && !aiThinking) scheduleAIMove();
                 }
             }
@@ -941,8 +1193,7 @@
             function onCellClick(row, col) {
                 if (gameOver || aiThinking) return;
                 if (gameMode === 'ai' && currentPlayer === WHITE) return;
-                const moves = getValidMoves(board, currentPlayer);
-                if (!moves.some(([r, c]) => r === row && c === col)) {
+                if (!getValidMoves(board, currentPlayer).some(([r, c]) => r === row && c === col)) {
                     setStatus('此处无法落子', 'warning');
                     const cell = cellElements[row][col];
                     cell.style.background = 'rgba(255,100,100,0.5)';
@@ -955,41 +1206,32 @@
             function executeMove(row, col, player) {
                 const result = makeMove(board, row, col, player);
                 board = result.board;
-                lastMoveRow = row; lastMoveCol = col;
+                lastMoveRow = row;
+                lastMoveCol = col;
                 moveHistory.push({ row, col, player, flips: result.flips });
                 renderBoard(result.flips);
 
                 const { black, white } = countPieces(board);
-                if (black + white >= 64 || black === 0 || white === 0) {
-                    endGame();
-                    return;
-                }
+                if (black + white >= 64 || black === 0 || white === 0) { endGame(); return; }
 
                 currentPlayer = player === BLACK ? WHITE : BLACK;
                 const validMoves = getValidMoves(board, currentPlayer);
-                if (validMoves.length === 0) {
+                if (!validMoves.length) {
                     const skipped = currentPlayer;
                     currentPlayer = currentPlayer === BLACK ? WHITE : BLACK;
                     renderBoard();
                     showValidMoves();
-                    const name = skipped === BLACK ? '黑棋' : '白棋';
-                    setStatus(`${name}无法落子，回合跳过`, 'warning');
-                    if (getValidMoves(board, currentPlayer).length === 0) {
-                        endGame();
-                        return;
-                    }
+                    setStatus(`${skipped === BLACK ? '黑棋' : '白棋'}无法落子，回合跳过`, 'warning');
+                    if (!getValidMoves(board, currentPlayer).length) { endGame(); return; }
                     if (gameMode === 'ai' && currentPlayer === WHITE && !gameOver) scheduleAIMove();
                     else if (gameMode === 'ai' && currentPlayer === BLACK) setStatus('白棋无法落子，轮到您', 'warning');
-                    else if (gameMode === 'manual') setStatus(`对方无法落子，轮到${currentPlayer === BLACK ? '黑棋' : '白棋'}`, 'warning');
+                    else if (gameMode === 'manual') setStatus(
+                        `对方无法落子，轮到${currentPlayer === BLACK ? '黑棋' : '白棋'}`, 'warning');
                 } else {
-                    if (gameMode === 'ai' && currentPlayer === WHITE) {
-                        setStatus('AI 思考中...');
-                        scheduleAIMove();
-                    } else if (gameMode === 'ai' && currentPlayer === BLACK) {
-                        setStatus('轮到您落子');
-                    } else {
-                        setStatus(`轮到${currentPlayer === BLACK ? '黑棋' : '白棋'}落子`);
-                    }
+                    if (gameMode === 'ai' && currentPlayer === WHITE) { setStatus('思考中...');
+                        scheduleAIMove(); } else if (gameMode === 'ai' && currentPlayer === BLACK) setStatus(
+                        '轮到您落子');
+                    else setStatus(`轮到${currentPlayer === BLACK ? '黑棋' : '白棋'}落子`);
                 }
                 showValidMoves();
                 updatePanelHighlight();
@@ -999,14 +1241,17 @@
                 gameOver = true;
                 aiThinking = false;
                 const { black, white } = countPieces(board);
-                let msg = '', type = 'victory';
-                if (black > white) msg = `🎉 黑棋获胜！ (${black}:${white})`;
-                else if (white > black) msg = `🎉 白棋获胜！ (${black}:${white})`;
-                else { msg = `🤝 平局！ (${black}:${white})`; type = ''; }
+                let msg = '',
+                    type = 'victory';
+                if (black > white) msg = `🎉 黑棋获胜！(${black}:${white})`;
+                else if (white > black) msg = `🎉 白棋获胜！(${black}:${white})`;
+                else { msg = `🤝 平局！(${black}:${white})`;
+                    type = ''; }
                 setStatus(msg, type);
                 renderBoard();
                 clearValidMoves();
                 updatePanelHighlight();
+                showEndDialogue();
             }
 
             // ==================== AI ====================
@@ -1015,32 +1260,31 @@
                 aiThinking = true;
                 renderBoard();
                 showValidMoves();
-                setStatus('AI 思考中...');
-                const delay = 300 + Math.random() * 400;
-                setTimeout(() => {
-                    if (gameOver) { aiThinking = false; return; }
-                    performAIMove();
-                }, delay);
+                setStatus('思考中...');
+                setTimeout(() => { if (gameOver) { aiThinking = false; return; }
+                    performAIMove(); }, 300 + Math.random() * 400);
             }
 
             function performAIMove() {
                 if (gameOver) { aiThinking = false; return; }
                 const moves = getValidMoves(board, WHITE);
-                if (moves.length === 0) {
+                if (!moves.length) {
                     aiThinking = false;
                     currentPlayer = BLACK;
                     renderBoard();
                     showValidMoves();
-                    setStatus('AI 无法落子，轮到您', 'warning');
-                    if (getValidMoves(board, BLACK).length === 0) endGame();
+                    setStatus('AI无法落子，轮到您', 'warning');
+                    if (!getValidMoves(board, BLACK).length) endGame();
                     updatePanelHighlight();
                     return;
                 }
-                let best = moves[0], bestScore = -Infinity;
+                let best = moves[0],
+                    bestScore = -Infinity;
                 for (const [r, c] of moves) {
                     const flips = getFlips(board, r, c, WHITE);
                     const score = POSITION_WEIGHTS[r][c] + flips.length * 3;
-                    if (score > bestScore) { bestScore = score; best = [r, c]; }
+                    if (score > bestScore) { bestScore = score;
+                        best = [r, c]; }
                 }
                 aiThinking = false;
                 executeMove(best[0], best[1], WHITE);
@@ -1049,10 +1293,9 @@
 
             // ==================== 模式与难度切换 ====================
             function setGameMode(mode) {
-                if (gameMode === mode && moveHistory.length > 0) {
-                    if (!confirm('确定要重新开始吗？')) return;
-                }
+                if (gameMode === mode && moveHistory.length > 0) { if (!confirm('确定要重新开始吗？')) return; }
                 gameMode = mode;
+                dualRoleSwapped = false;
                 updateModeButtons();
                 difficultyGroup.style.display = mode === 'ai' ? 'flex' : 'none';
                 btnSwapAvatars.style.display = mode === 'manual' ? 'inline-block' : 'none';
@@ -1062,9 +1305,7 @@
             }
 
             function setDifficulty(diff) {
-                if (difficulty === diff && moveHistory.length > 0) {
-                    if (!confirm('切换难度将重新开始，确定吗？')) return;
-                }
+                if (difficulty === diff && moveHistory.length > 0) { if (!confirm('切换难度将重新开始，确定吗？')) return; }
                 difficulty = diff;
                 btnDiff1.classList.toggle('active', diff === '1');
                 btnDiff2.classList.toggle('active', diff === '2');
@@ -1078,7 +1319,7 @@
                 btnModeManual.classList.toggle('active', gameMode === 'manual');
             }
 
-            // ==================== 事件绑定 ====================
+            // 事件绑定
             btnModeAI.addEventListener('click', () => setGameMode('ai'));
             btnModeManual.addEventListener('click', () => setGameMode('manual'));
             btnDiff1.addEventListener('click', () => setDifficulty('1'));
@@ -1088,17 +1329,11 @@
                 startNewGame();
             });
             btnSwapAvatars.addEventListener('click', swapDualAvatars);
+            document.addEventListener('keydown', e => { if (e.key === 'n' && e.ctrlKey) { e.preventDefault();
+                    startNewGame(); } });
+            window.addEventListener('resize', () => { renderBoard();
+                showValidMoves(); });
 
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'n' && e.ctrlKey) { e.preventDefault(); startNewGame(); }
-            });
-
-            window.addEventListener('resize', () => {
-                renderBoard();
-                showValidMoves();
-            });
-
-            // ==================== 初始化 ====================
             function init() {
                 createBoardDOM();
                 btnDiff1.classList.add('active');
@@ -1108,6 +1343,11 @@
                 startNewGame();
             }
             init();
+            console.log('🔄 翻转棋 · 北欧对决已就绪！');
+            console.log('📌 人机模式：选择丁马克(难度1)或诺威(难度2)作为对手');
+            console.log('👥 双人模式：双方分别扮演丁马克和诺威，点击"互换头像"可交换角色');
+            console.log('💬 游戏结束后会随机显示角色结局对话');
+            console.log('🖼️ 头像设置：搜索 AVATAR_PLAYER / AVATAR_DINGMAKE / AVATAR_NUOWEI');
         })();
     </script>
 </body>
