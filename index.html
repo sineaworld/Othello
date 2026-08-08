@@ -378,7 +378,6 @@
             font-size: 0.95rem;
         }
 
-        /* 对话气泡 */
         .dialogue-box {
             background: var(--dialogue-bg);
             border: 2px solid var(--dialogue-border);
@@ -414,7 +413,6 @@
             }
         }
 
-        /* 响应式 */
         @media (max-width: 768px) {
             :root {
                 --cell-size: clamp(34px, 10.5vw, 48px);
@@ -523,12 +521,9 @@
         </div>
 
         <div class="status-message" id="statusMessage">黑棋先行，请落子</div>
-
-        <!-- 结局对话区域 -->
         <div class="dialogue-box" id="dialogueBox"></div>
 
         <div class="main-game-area">
-            <!-- 桌面端左侧面板 -->
             <div class="player-panel player-panel-desktop active-player" id="panelPlayerDesktop">
                 <div class="avatar-container hidden-avatar" id="avatarContainerPlayerDesktop">
                     <div class="avatar-placeholder">👤</div>
@@ -543,7 +538,6 @@
                 <div class="board-grid" id="boardGrid"></div>
             </div>
 
-            <!-- 桌面端右侧面板 -->
             <div class="player-panel player-panel-desktop" id="panelOpponentDesktop">
                 <div class="avatar-container hidden-avatar" id="avatarContainerOpponentDesktop">
                     <div class="avatar-placeholder">👤</div>
@@ -554,7 +548,6 @@
                 <div class="stone-indicator"><span class="stone-dot white-dot"></span> 白棋</div>
             </div>
 
-            <!-- 移动端面板 -->
             <div class="players-row" id="playersRowMobile">
                 <div class="player-panel active-player" id="panelPlayerMobile">
                     <div class="avatar-container hidden-avatar" id="avatarContainerPlayerMobile">
@@ -586,16 +579,8 @@
              * =======================================================
              */
             const AVATAR_PLAYER = ''; // 头像0：玩家自己的头像
-            const AVATAR_DINGMAKE = 'https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEYgINqca3LFrGaOeisko15MtZjKveVCwACayAAAniTkFf7iMZE-S_ezj0E.jpg'; // 头像1：丁马克（丹麦）的头像，难度1使用
-            const AVATAR_NUOWEI = 'https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEYgHJqca18Ya31AAG6wBxzrD61cRi1DHkAAlogAAJ4k5BXKIlZDzT8Hlg9BA.jpg'; // 头像2：诺威（挪威）的头像，难度2使用
-            /*
-             * =======================================================
-             * 示例：
-             * const AVATAR_PLAYER = 'https://example.com/player.jpg';
-             * const AVATAR_DINGMAKE = 'https://example.com/denmark.jpg';
-             * const AVATAR_NUOWEI = 'https://example.com/norway.jpg';
-             * =======================================================
-             */
+            const AVATAR_DINGMAKE = '1.jpg'; // 头像1：丁马克（丹麦）的头像，难度1使用
+            const AVATAR_NUOWEI = '2.jpg'; // 头像2：诺威（挪威）的头像，难度2使用
 
             const EMPTY = 0,
                 BLACK = 1,
@@ -611,7 +596,6 @@
                 [1, 1]
             ];
 
-            // 状态
             let board = [],
                 currentPlayer = BLACK,
                 gameOver = false,
@@ -621,9 +605,8 @@
                 difficulty = '1',
                 aiThinking = false,
                 moveHistory = [];
-            let dualRoleSwapped = false; // 双人模式头像是否已互换
+            let dualRoleSwapped = false;
 
-            // DOM
             const boardGrid = document.getElementById('boardGrid');
             const statusMessage = document.getElementById('statusMessage');
             const dialogueBox = document.getElementById('dialogueBox');
@@ -702,7 +685,7 @@
                     '哎呀，平分秋色，下次再战！', '这可不行，平局感觉像没打完，再来！'
                 ],
                 [ // 惜败
-                    '什么？我居然输了一点点？！', '呜…就差那么一步，可恶！',
+                    '什么？我居然输了一点点？！', '啊…就差那么一步，可恶！',
                     '是你运气好啦！下次一定赢回来！', '呃，居然会败北，今天风向不对。',
                     '只差一点！我不甘心！', '你偷偷特训了吗？棋力见长啊！',
                     '好吧，这次算你厉害，但只是今天！', '输给朋友倒也不坏，但下次可不会了！',
@@ -736,7 +719,7 @@
                 [ // 大胜
                     '赢了不少。还可以吧。', '你的棋路太容易预判了。',
                     '这差距，大概是你今天运气不好。', '嗯，比刚才那局顺手一些。',
-                    '别再犯同样的错误了。', '安安静静就赢了。',
+                    '别再犯同样的错误了。', '你还需要锻炼。',
                     '果然，我的计算没错。', '赢太多有点抱歉。',
                     '和我下棋，你该更谨慎。', '胜利，如同北海的薄雾一般自然。'
                 ],
@@ -744,7 +727,7 @@
                     '险胜……你的棋有些意思。', '差点被翻盘，大意了。',
                     '能让我认真起来，值得夸奖。', '这一步之差，就是胜负。',
                     '你比外表看起来要狡猾。', '我不讨厌势均力敌的对手。',
-                    '赢得很微妙，下次别指望了。', '终于结束了，有点累。',
+                    '……差点大意了。', '终于结束了，有点累。',
                     '就多几个子，险胜。', '最后的形势真让人窒息。'
                 ],
                 [ // 平局
@@ -882,8 +865,7 @@
                 imgEl.src = url || '';
                 const c = imgEl.closest('.avatar-container');
                 if (c) {
-                    if (url && url.trim()) { /* 浏览器触发onload/onerror */ } else { c.classList.add(
-                        'hidden-avatar');
+                    if (url && url.trim()) {} else { c.classList.add('hidden-avatar');
                         c.classList.remove('has-image'); }
                 }
             }
@@ -915,7 +897,6 @@
                 dualRoleSwapped = !dualRoleSwapped;
                 updateAllAvatars();
                 updateNames();
-                // 如果游戏已结束，刷新对话
                 if (gameOver) showEndDialogue();
             }
 
@@ -1106,15 +1087,15 @@
                 dialogueBox.classList.add('show');
             }
 
-            // ==================== 结局对话 ====================
+            // ==================== 结局对话（修复版） ====================
             function getSituationIndex(blackCount, whiteCount) {
                 const diff = blackCount - whiteCount;
                 const absDiff = Math.abs(diff);
                 const loserCount = diff > 0 ? whiteCount : blackCount;
-                if (absDiff === 0) return 3; // 平局
-                if (loserCount <= 3) return diff > 0 ? 0 : 6; // 绝胜/惨败(败方<=3子)
-                if (absDiff >= 18) return diff > 0 ? 1 : 5; // 大胜/大败
-                return diff > 0 ? 2 : 4; // 小胜/惜败
+                if (absDiff === 0) return 3;
+                if (loserCount <= 3) return diff > 0 ? 0 : 6;
+                if (absDiff >= 18) return diff > 0 ? 1 : 5;
+                return diff > 0 ? 2 : 4;
             }
 
             function getRandomDialogue(arr) {
@@ -1123,34 +1104,29 @@
 
             function showEndDialogue() {
                 const { black, white } = countPieces(board);
-                const sitIdx = getSituationIndex(black, white);
+                const sitIdx = getSituationIndex(black, white); // 黑棋视角
                 let dialogueText = '';
 
                 if (gameMode === 'ai') {
                     const aiName = difficulty === '1' ? '丁马克' : '诺威';
                     const dialogues = difficulty === '1' ? DIALOGUES_DINGMAKE : DIALOGUES_NUOWEI;
-                    // AI是白棋，从AI视角看局势
-                    // sitIdx是基于黑棋(玩家)视角的，需要翻转
-                    const aiSitIdx = [6, 5, 4, 3, 2, 1, 0][sitIdx]; // 玩家绝胜=AI惨败 等
+                    const aiSitIdx = [6, 5, 4, 3, 2, 1, 0][sitIdx];
                     const msg = getRandomDialogue(dialogues[aiSitIdx]);
                     dialogueText = `<span class="line">${aiName}：${msg}</span>`;
                 } else {
-                    // 双人模式：黑棋=丁马克(或诺威如果互换)，白棋=诺威(或丁马克)
-                    const blackRole = !dualRoleSwapped ? '丁马克' : '诺威';
-                    const whiteRole = !dualRoleSwapped ? '诺威' : '丁马克';
-                    // sitIdx是黑棋视角
-                    const pair = getRandomDialogue(DIALOGUES_DUAL[sitIdx]);
-                    // pair[0]是丹麦(丁马克)的对话，pair[1]是挪威(诺威)的对话
-                    let dingMsg, nuoMsg;
-                    if (blackRole === '丁马克') {
-                        dingMsg = pair[0];
-                        nuoMsg = pair[1];
+                    // 双人模式：找到丹麦在哪一边
+                    const blackIsDing = !dualRoleSwapped; // true:黑棋是丁马克，false:黑棋是诺威
+                    let dingSitIdx;
+                    if (blackIsDing) {
+                        dingSitIdx = sitIdx; // 黑棋视角就是丹麦视角
                     } else {
-                        dingMsg = pair[1];
-                        nuoMsg = pair[0];
+                        // 丹麦是白棋，需要转换
+                        dingSitIdx = [6, 5, 4, 3, 2, 1, 0][sitIdx];
                     }
-                    dialogueText =
-                        `<span class="line">${blackRole}：${blackRole === '丁马克' ? dingMsg : nuoMsg}</span>\n<span class="line">${whiteRole}：${whiteRole === '丁马克' ? dingMsg : nuoMsg}</span>`;
+                    const pair = getRandomDialogue(DIALOGUES_DUAL[dingSitIdx]);
+                    const dingLine = `丁马克：${pair[0]}`;
+                    const nuoLine = `诺威：${pair[1]}`;
+                    dialogueText = `<span class="line">${dingLine}</span>\n<span class="line">${nuoLine}</span>`;
                 }
                 showDialogue(dialogueText);
             }
@@ -1273,7 +1249,7 @@
                     currentPlayer = BLACK;
                     renderBoard();
                     showValidMoves();
-                    setStatus('AI无法落子，轮到您', 'warning');
+                    setStatus('对方无法落子，轮到您', 'warning');
                     if (!getValidMoves(board, BLACK).length) endGame();
                     updatePanelHighlight();
                     return;
@@ -1291,7 +1267,7 @@
                 if (!gameOver && currentPlayer === BLACK) setStatus('轮到您落子');
             }
 
-            // ==================== 模式与难度切换 ====================
+            // ==================== 模式切换 ====================
             function setGameMode(mode) {
                 if (gameMode === mode && moveHistory.length > 0) { if (!confirm('确定要重新开始吗？')) return; }
                 gameMode = mode;
